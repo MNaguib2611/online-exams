@@ -22,9 +22,20 @@ const ExamSchema = mongoose.Schema({
         required: true,
     },
     rules: [{type: String}],
-    questions: [{questionAnswers: [{answers: String, correctAnswer: Boolean}], questionStatement: String } ],
+    questions: [{questionAnswers: [ {type: String}],correctAnswer:String, questionStatement: String } ],
+   
+
 });
 
+
+
+ExamSchema.methods.toJSON = function() {
+    const obj = this.toObject();
+    obj.questions.forEach(question => {
+        delete question.correctAnswer;
+    });
+    return obj;
+   }
 const ExamModel = mongoose.model('Exam', ExamSchema);
 
 module.exports = ExamModel;

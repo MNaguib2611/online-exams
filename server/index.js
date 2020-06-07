@@ -1,8 +1,9 @@
 const express = require('express')
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const dotenv = require("dotenv");
 const sendMail=require('./email')  //use this function whenwver you want to send an email sendMail(email,data to be passed)
-const {studentRouter, teacherRouter} = require('./routes/allRoutes');
+const {studentRouter, teacherRouter,examRouter} = require('./routes/allRoutes');
 dotenv.config();
 
 const app = express()
@@ -24,10 +25,10 @@ mongoose.connect(`mongodb://${process.env.DEVELOPMENT_SERVER}:${process.env.DATA
     // second argument is the template name (found in ./emailTemplates)
     // third argument is the object containing all info to be sent  
 
-   sendMail('m.naguib2611@gmail.com','studentGrade',{username:"Mohammed Naguib",grade:99});
-   sendMail('m.naguib2611@gmail.com','teacher1',{teacherName:"Mr.Naguib"}); 
+//    sendMail('m.naguib2611@gmail.com','studentGrade',{username:"Mohammed Naguib",grade:99});
+//    sendMail('m.naguib2611@gmail.com','teacher1',{teacherName:"Mr.Naguib"}); 
 
-    
+    app.use(bodyParser.json());
     // middleware that logs requests method and the url requested.
     app.use((req, res, next) => {
         console.log(`\n\n${new Date().toISOString()}`);
@@ -38,7 +39,7 @@ mongoose.connect(`mongodb://${process.env.DEVELOPMENT_SERVER}:${process.env.DATA
     
     app.get('/', (req, res) => res.send('Hello World!'))
 
-
+    app.use('/exams', examRouter);
 
 
 
