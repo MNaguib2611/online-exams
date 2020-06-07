@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose');
 const dotenv = require("dotenv");
 const sendMail=require('./email')  //use this function whenwver you want to send an email sendMail(email,data to be passed)
+const {studentRouter, teacherRouter} = require('./routes/allRoutes');
 dotenv.config();
 
 const app = express()
@@ -19,8 +20,12 @@ mongoose.connect(`mongodb://${process.env.DEVELOPMENT_SERVER}:${process.env.DATA
 
 
     // call the function at the route that is required
-   // sendMail('m.naguib2611@gmail.com',99);
-    
+    // first argument is the recipient email
+    // second argument is the template name (found in ./emailTemplates)
+    // third argument is the object containing all info to be sent  
+
+   sendMail('m.naguib2611@gmail.com','studentGrade',{username:"Mohammed Naguib",grade:99});
+   sendMail('m.naguib2611@gmail.com','teacher1',{teacherName:"Mr.Naguib"}); 
 
     
     // middleware that logs requests method and the url requested.
