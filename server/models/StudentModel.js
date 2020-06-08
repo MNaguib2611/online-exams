@@ -14,7 +14,7 @@ const StudentSchema = mongoose.Schema({
         required: true,
     },
     exams: [{exam: {type: 'ObjectId', ref: 'Exam'}, score: Number}],
-});
+}, { timestamps: true });
 
 const StudentModel = mongoose.model('Student', StudentSchema);
 
