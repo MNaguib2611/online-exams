@@ -6,7 +6,6 @@ const sendMail=require('./email')  //use this function whenwver you want to send
 const {studentRouter, teacherRouter,examRouter} = require('./routes/allRoutes');
 dotenv.config();
 
-const examRouter = require('./routes/ExamRoute');
 const app = express();
 
 app.use(express.json());
