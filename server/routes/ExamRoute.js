@@ -64,7 +64,7 @@ router.post('/:id/answers', async (req, res) => {
       const isRightAnswer = exam.questions.filter(
         answer => answer.correctAnswer == studentAnswer.answer
       );
-      if (studentAnswer.answer === exam.answers[studentAnswer._id]) score++;
+      // if (studentAnswer.answer === exam.answers[studentAnswer._id]) score++;
     });
 
     if (!exam) res.status(404).send();
