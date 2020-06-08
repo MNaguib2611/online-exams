@@ -1,0 +1,38 @@
+[{
+  "_id": {
+    "$oid": "5edd1119008935164d461510"
+  },
+  "teacher": {
+    "$oid": "5edd10d5008935164d46150f"
+  },
+  "key": "asdfgh",
+  "startDate": {
+    "$date": "2020-07-05T22:00:00Z"
+  },
+  "endDate": {
+    "$date": "2020-07-15T22:00:00Z"
+  },
+  "rules": "welcome first exam rules",
+  "questions": [
+    {
+      "questionAnswers": [
+        "ali",
+        "amr",
+        "ezz",
+        "sir"
+      ],
+      "questionStatement": "who is the richest person in Egypt?",
+      "correctAnswer": "amr"
+    },
+    {
+      "questionAnswers": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "questionStatement": "which is the best Letter?",
+      "correctAnswer": "A"
+    }
+  ]
+}]

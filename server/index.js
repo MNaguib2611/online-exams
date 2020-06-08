@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const dotenv = require("dotenv");
 const sendMail=require('./email')  //use this function whenwver you want to send an email sendMail(email,data to be passed)
-const {studentRouter, teacherRouter,examRouter} = require('./routes/allRoutes');
+const {teacherRouter,examRouter} = require('./routes/allRoutes');
 dotenv.config();
 
 const app = express();
@@ -25,23 +25,23 @@ app.get('/', (req, res) => res.send('Hello World!'));
 // mongoose.connect('mongodb://localhost/test', {useNewUrlParser: true});
 mongoose.connect(
   `mongodb://${process.env.DEVELOPMENT_SERVER}:${process.env.DATA_BASE_PORT}/OnlineExamsPlatform`,
-  { useNewUrlParser: true, useUnifiedTopology: true },
+  {   
+    useCreateIndex: true,
+    useNewUrlParser:true,
+    useUnifiedTopology: true,
+    useFindAndModify:false
+ },
   err => {
     if (err) {
       console.log(err);
     } else {
-      console.log(
+      console.log('\x1b[32m%s\x1b[0m',
         `connected to mongoose on port ${process.env.DATA_BASE_PORT}`
       );
     }
   }
 );
-app.listen(process.env.SERVER_PORT, () =>
-  console.log(
-    `Example app listening at http://localhost:${process.env.SERVER_PORT}`
-  )
-);
-       
+
 
 
     // call the function at the route that is required

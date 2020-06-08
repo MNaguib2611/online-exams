@@ -1,4 +1,3 @@
-const studentRouter   =  require('./student');
 const teacherRouter = require('./teacher');
 const examRouter = require('./exam');
 
@@ -11,4 +10,4 @@ const examRouter = require('./exam');
 
 
 
-module.exports = {studentRouter, teacherRouter,examRouter}
+module.exports = {teacherRouter,examRouter}
