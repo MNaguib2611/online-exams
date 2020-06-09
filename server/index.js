@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const sendMail = require('./email'); //use this function whenwver you want to send an email sendMail(email,data to be passed)
 const { teacherRouter, examRouter } = require('./routes');
+const teacherMiddleware = require('./middleware/TeacherMiddleware');
 dotenv.config();
 
 const app = express();
@@ -21,7 +22,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/', (req, res) => res.send('Hello World!'));
+app.get('/', teacherMiddleware, (req, res) => res.send('Hello World!'));
 
 // mongoose.connect('mongodb://localhost/test', {useNewUrlParser: true});
 mongoose.connect(
