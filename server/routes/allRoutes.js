@@ -1,4 +1,4 @@
-const teacherRouter = require('./teacher');
+const teacherRouter = require('./TeacherRoute.js');
 const examRouter = require('./exam');
 
 

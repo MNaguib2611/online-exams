@@ -11,6 +11,7 @@ const app = express();
 app.use(express.json());
 
 app.use('/exams', examRouter);
+app.use('/teacher', teacherRouter);
 
 // middleware that logs requests method and the url requested.
 app.use((req, res, next) => {
