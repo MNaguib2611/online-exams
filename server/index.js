@@ -49,7 +49,7 @@ mongoose.connect(
 // second argument is the template name (found in ./emailTemplates)
 // third argument is the object containing all info to be sent
 
-//    sendMail('m.naguib2611@gmail.com','studentGrade',{username:"Mohammed Naguib",grade:99});
+
 //    sendMail('m.naguib2611@gmail.com','teacher1',{teacherName:"Mr.Naguib"});
 
 app.use(bodyParser.json());
