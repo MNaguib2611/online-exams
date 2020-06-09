@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const sendMail = require('./email'); //use this function whenwver you want to send an email sendMail(email,data to be passed)
-const { teacherRouter, examRouter } = require('./routes');
+const { teacherRouter, examRouter,studentRouter } = require('./routes');
 dotenv.config();
 
 const app = express();
@@ -13,13 +13,13 @@ app.use(express.json());
 app.use('/exams', examRouter);
 app.use('/teacher', teacherRouter);
 
-// middleware that logs requests method and the url requested.
-app.use((req, res, next) => {
-  console.log(`\n\n${new Date().toISOString()}`);
-  console.log(`new request, its method: ${req.method}`);
-  console.log(`the url requested: ${req.url}\n`);
-  next();
-});
+// // middleware that logs requests method and the url requested.
+// app.use((req, res, next) => {
+//   console.log(`\n\n${new Date().toISOString()}`);
+//   console.log(`new request, its method: ${req.method}`);
+//   console.log(`the url requested: ${req.url}\n`);
+//   next();
+// });
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
@@ -53,17 +53,13 @@ mongoose.connect(
 //    sendMail('m.naguib2611@gmail.com','teacher1',{teacherName:"Mr.Naguib"});
 
 app.use(bodyParser.json());
-// middleware that logs requests method and the url requested.
-app.use((req, res, next) => {
-  console.log(`\n\n${new Date().toISOString()}`);
-  console.log(`new request, its method: ${req.method}`);
-  console.log(`the url requested: ${req.url}\n`);
-  next();
-});
+
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
 app.use('/exams', examRouter);
+app.use('/students', studentRouter);
+
 
 app.listen(process.env.SERVER_PORT, () =>
   console.log(
