@@ -53,21 +53,23 @@ TeacherController.logout = (req, res) => {
     res.status(200).send({ auth: false, token: null });
 };
 
-TeacherController.authenticate = async (req)=>{
+TeacherController.authenticate = async (req, res, next)=>{
     if(req.header['x-access-token']){
         try{
             let decoded = await jwt.verify(req.header['x-access-token'], process.env.SECRET);
             let Teacher = TeacherModel.find({_id: decoded.id});
             if(Teacher){
-                return true;
+                req.userId = decoded.id;
+                next();
             } else {
-                return false;
+                return res.status(404).send("No user found.");
             }
         } catch(e){
-            if (err) return res.status(500).send("There was a problem authenticating the user.");
+            console.log(e);
+            return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
         }
     } else {
-        return false
+        return res.status(403).send({ auth: false, message: 'No token provided.' });
     }
 }
 
