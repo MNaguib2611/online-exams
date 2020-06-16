@@ -6,13 +6,15 @@
     "$oid": "5edd10d5008935164d46150f"
   },
   "key": "asaaa",
+  "name": "phyiscs",
   "startDate": {
-    "$date": "2020-07-05T22:00:00Z"
+    "$date": "2020-05-05T22:00:00Z"
   },
   "endDate": {
     "$date": "2020-07-15T22:00:00Z"
   },
   "rules": "welcome first exam rules",
+  "durationInMins": "120",
   "questions": [
     {
       "questionAnswers": [

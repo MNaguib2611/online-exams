@@ -19,14 +19,12 @@ const sendAnswers = async (req, res) => {
 
       // if (studentAnswer.answer === exam.answers[studentAnswer._id]) score++;
     });
-
     if (!exam) res.status(404).send();
     sendMail(student.email, 'studentScore', {
       studentName: student.name,
       examName: exam.name,
       score: score,
     });
-
     res.status(200).send({ score });
   } catch (error) {
     res.send(error);
