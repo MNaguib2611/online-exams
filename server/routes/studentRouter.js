@@ -1,23 +1,17 @@
 const { Router } = require('express');
-const Exam = require('../models/ExamModel');
-const Student = require('../models/StudentModel');
-const { getExamByCode,studentStartExam } = require('../controllers/StudentController');
-
+const {
+  getExamByCode,
+  studentStartExam,
+  authenticate,
+  sendAnswers,
+} = require('../controllers/StudentController');
 
 const router = new Router();
 
+router.post('/answers', authenticate, sendAnswers);
 
-// router.get("/", (req, res) => {
-//    res.json("jjjj");
-// })
+router.post('/enroll', getExamByCode);
 
-router.post("/enroll",getExamByCode )
-
-
-router.patch("/startExam", studentStartExam)
-
-
-
-
+router.patch('/startExam', authenticate, studentStartExam);
 
 module.exports = router;

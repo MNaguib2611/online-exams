@@ -7,21 +7,21 @@ const {
   updateQuestion,
   deleteQuestion,
 } = require('../controllers/ExamController');
-const { sendAnswers } = require('../controllers/StudentController');
+
+const { authenticate } = require('../controllers/TeacherController.js');
 
 const router = new Router();
 
 // Teacher  exam CRUD
-router.post('/', createExam);
-router.delete('/:id', deleteExam);
+router.post('/', authenticate, createExam);
+router.delete('/:id', authenticate, deleteExam);
 
-router.put('/:id', updateExam);
+router.put('/:id', authenticate, updateExam);
 
 // Teacher can add question to  exam
-router.put('/:id/question', addQuestion);
-router.put('/:id/question/:qid', updateQuestion);
-router.delete('/:id/question/:qid', deleteQuestion);
+router.put('/:id/question', authenticate, addQuestion);
+router.put('/:id/question/:qid', authenticate, updateQuestion);
+router.delete('/:id/question/:qid', authenticate, deleteQuestion);
 // Student can submit exam and get score
-router.post('/:id/answers', sendAnswers);
 
 module.exports = router;

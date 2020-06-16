@@ -2,13 +2,15 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
+const cors = require('cors');
 const sendMail = require('./email'); //use this function whenwver you want to send an email sendMail(email,data to be passed)
-const teacherMiddleware = require('./middleware/TeacherMiddleware');
-const { teacherRouter, examRouter,studentRouter } = require('./routes');
+
+const { teacherRouter, examRouter, studentRouter } = require('./routes');
 dotenv.config();
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.use('/exams', examRouter);
@@ -22,8 +24,6 @@ app.use('/teacher', teacherRouter);
 //   next();
 // });
 
-app.get('/', teacherMiddleware, (req, res) => res.send('Hello World!'));
-
 // mongoose.connect('mongodb://localhost/test', {useNewUrlParser: true});
 mongoose.connect(
   `mongodb://${process.env.DEVELOPMENT_SERVER}:${process.env.DATA_BASE_PORT}/OnlineExamsPlatform`,
@@ -33,7 +33,7 @@ mongoose.connect(
     useUnifiedTopology: true,
     useFindAndModify: false,
   },
-  err => {
+  (err) => {
     if (err) {
       console.log(err);
     } else {
@@ -50,17 +50,14 @@ mongoose.connect(
 // second argument is the template name (found in ./emailTemplates)
 // third argument is the object containing all info to be sent
 
-
 //    sendMail('m.naguib2611@gmail.com','teacher1',{teacherName:"Mr.Naguib"});
 
 app.use(bodyParser.json());
-
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
 app.use('/exams', examRouter);
 app.use('/students', studentRouter);
-
 
 app.listen(process.env.SERVER_PORT, () =>
   console.log(
