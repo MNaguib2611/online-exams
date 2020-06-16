@@ -54,14 +54,16 @@ const getExamByCode = (req, res) => {
               exam,
               token,
             });
+            sendMail(student.email, 'enrolledInExam', {
+              studentName: student.name,
+              examName: exam.name,
+            });
           })
-          .catch((err) =>
+          .catch((err) =>{
+            console.log(err);
             res.status(400).json({ msg: 'you already enrolled for this exam' })
+          }
           );
-        sendMail(student.email, 'enrolledInExam', {
-          studentName: student.name,
-          examName: exam.name,
-        });
       } else if (exam.startDate > Date.now()) {
         res.status(401).json({ msg: "Exam hasn't started yet" });
       } else {

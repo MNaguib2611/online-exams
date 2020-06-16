@@ -141,6 +141,18 @@ exports.updateQuestion = async (req, res) => {
   });
 };
 
+
+exports.getExamById  = async (req, res) => {
+  Exam.findById(
+    req.params.id,
+    (err, exam) => {
+      if (err) return res.status(500).send(err);
+      else if (!exam) return res.status(404).send();
+      res.send({exam });
+    }
+  );
+}
+
 exports.deleteQuestion = (req, res) => {
   Exam.findByIdAndUpdate(
     req.params.id,

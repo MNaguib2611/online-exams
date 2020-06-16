@@ -6,6 +6,7 @@ const {
   addQuestion,
   updateQuestion,
   deleteQuestion,
+  getExamById
 } = require('../controllers/ExamController');
 
 const { authenticate } = require('../controllers/TeacherController.js');
@@ -14,6 +15,7 @@ const router = new Router();
 
 // Teacher  exam CRUD
 router.post('/', authenticate, createExam);
+router.get('/:id', getExamById);
 router.delete('/:id', authenticate, deleteExam);
 
 router.put('/:id', authenticate, updateExam);

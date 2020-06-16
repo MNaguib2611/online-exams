@@ -7,6 +7,7 @@ body {
 }
 
 #login {
+  background-image: url('../imgs/login_bg.jpg');
   background-size: cover;
   height: 100%;
   width: 100%;
@@ -23,13 +24,6 @@ body {
   background-color: #fff;
   max-width: 50%;
   margin: 8rem auto;
-}
-
-.rules-container{
-  padding: 1rem 2rem 2rem 2rem;
-  background-color: #fff;
-  max-width: 100%;
-  margin: 5rem auto;
 }
 
 .nav-tabs .nav-link {
