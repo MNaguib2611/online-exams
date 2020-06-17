@@ -1,9 +1,14 @@
 import React from 'react'
-
+import bgImage from './login_bg.jpg';
+import {StudentExam} from  "./../../components/StudentExam/StudentExam"
 export const Exam = () => {
     return (
-        <div>
-            <h1>This Exam Page</h1>
+        <section className="examDiv" style={{ backgroundImage: `url(${bgImage})` }}>
+        <div className='overly'>
+            <div className='rules-container'>
+             <StudentExam />
+            </div>
         </div>
-    )
+      </section>
+        )
 }

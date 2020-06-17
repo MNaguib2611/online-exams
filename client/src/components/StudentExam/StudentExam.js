@@ -1,37 +1,93 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
+import React,{useState,useContext,useEffect} from 'react'; 
+import { ExamContext } from '../../context/examContext';
+import Question from './Question';
+import Pagination from './Pagination';
+import {Timer} from './Timer'
+import axios from '../../axios';
+import {useHistory } from "react-router-dom";
+const transformObjectToArr=(obj)=>{
+  let arr=[];
+  let answerArrObj;
+  Object.keys(obj).map((key)=>{
+    answerArrObj={}
+    answerArrObj[key]=obj[key]
+    arr=[...arr,answerArrObj]
+  })
+  return arr
+}
 
-import React from 'react';
 
-export const studentExam = (props) => {
+export const StudentExam = (props) => {
+  const history = useHistory();
+  const {exam,}= useContext(ExamContext);
+  const [answers,setAnswers]= useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+ 
+  
+
+
+  useEffect(()=>{
+    console.log("answersObj",answers);
+  },[answers])
+
+
+
+  const currentQuestion = exam.questions[currentPage-1]
+  const paginate = pageNumber => setCurrentPage(pageNumber);
+
+// 
+// 
+// 
+// 
+  //use this function to send answers to the backend server
+  const sendExamToBeGraded =()=> {
+    const answersArr =transformObjectToArr(answers) 
+    console.log(answersArr);
+    
+  //   axios.post("answers",{ answers :answersArr}).then((grade) => {
+    // localStorage.setItem('grade',JSON.stringify(grade));
+            // history.push("/grade");
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+  // }
+
+// 
+// 
+// 
+
+
+  const submitAnswers=()=>{
+    if(Object.keys(answers).length < exam.questions.length) alert(`you have ${exam.questions.length-Object.keys(answers).length} unsolved questions`);
+    else{
+      sendExamToBeGraded() 
+    }
+  }
+
+
+
+
+
+
+
   return (
-    <div id='teacher-form'>
-      <div className='teacher-login'>
-        <h2 className='text-center form-title'>
-          <i className='fas fa-user-tie'></i> Exam Page
-        </h2>
+    <div>
+    <Timer   timeIsUp={sendExamToBeGraded} />
+      <Question
+        currentQuestion={currentQuestion} 
+        currentPage={currentPage} 
+        answers={answers}
+        setAnswers={setAnswers}
+        />
 
-        <div className='form-group'>
-          <input type='email' className='form-control' placeholder='Email' />
-        </div>
+      <Pagination
+        totalQuestions={exam.questions.length}
+        currentPage={currentPage}
+        paginate={paginate}
+      />
 
-        <div className='form-group'>
-          <input
-            type='password'
-            className='form-control'
-            placeholder='password'
-          />
-        </div>
-        <div className='mb-3 text-right'>
-          <a
-            href='#'
-            className='toggleForm text-orange'
-            onClick={() => props.toggleTeacherForm()}
-          >
-            create account?
-          </a>
-        </div>
-        <button className='btn btn-block btn-blue'> SING IN</button>
-      </div>
+    <button className='btn btn-success text-light' onClick={submitAnswers}> Submit Answers</button>
     </div>
   );
 };

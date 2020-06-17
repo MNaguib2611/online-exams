@@ -101,3 +101,5 @@ export const StudentEnroll = () => {
     </div>
   );
 };
+
+

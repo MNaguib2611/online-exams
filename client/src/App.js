@@ -22,13 +22,13 @@ function App() {
         <Switch>
 
         <ExamContext.Provider value={{ exam, setExam }}>
+
               <RequireNotEnroll exact path='/' component={Home}/>
              
-              <Route path='/exam' exact>
-                <Exam />
-              </Route>
+              <RequireEnroll exact path='/exam' component={Exam}/>
               
               <RequireEnroll exact path='/rules' component={ExamRules}/>
+
         </ExamContext.Provider>         
 
         </Switch>

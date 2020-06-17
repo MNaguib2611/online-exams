@@ -4,11 +4,11 @@ import { StudentRules } from './../../components/StudentExam/StudentRules';
 
 export const ExamRules = () => {
   return (
-    <section id='login' style={{ backgroundImage: `url(${bgImage})` }}>
+    <section className="examDiv" style={{ backgroundImage: `url(${bgImage})` }}>
       <div className='overly'>
         <div className='container'>
           <div className='rules-container'>
-           < StudentRules />
+           <StudentRules />
           </div>
         </div>
       </div>
