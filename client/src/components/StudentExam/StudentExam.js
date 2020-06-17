@@ -51,7 +51,7 @@ export const StudentExam = (props) => {
   //   .catch((err) => {
   //     console.log(err);
   //   });
-  // }
+  }
 
 // 
 // 
