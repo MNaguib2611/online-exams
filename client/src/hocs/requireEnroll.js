@@ -6,12 +6,12 @@ import axios from '../axios';
 const RequireEnroll = ({ component: Component, ...rest }) => {
   const {exam,setExam}= useContext(ExamContext);
   const enrollmentData = JSON.parse(localStorage.getItem('enrollmentData'));
-
+  const durationInMins = JSON.parse(localStorage.getItem('durationInMins'));
+  
   return (
     <Route {...rest} render={
       props => {
         if (!localStorage.getItem('enrollmentData')) {
-            console.log("sdsadsadasd")
             return <Redirect to={
                         {
                         pathname: '/',
@@ -26,8 +26,8 @@ const RequireEnroll = ({ component: Component, ...rest }) => {
                   await  axios
                 .get(`/exams/${enrollmentData.examId}`)
                 .then((exam) => {
-                    console.log("response",exam)
-                    setExam(exam.data.exam);
+                  durationInMins? setExam({...exam.data.exam,durationInMins}):setExam(exam)
+                   
                 })
                 .catch((err) => {
                     console.log(err);

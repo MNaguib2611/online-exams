@@ -1,10 +1,12 @@
 import React, { useContext,useState } from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import Home from './pages/Home/Home';
 import { Exam } from './pages/Exam/Exam';
 import { ExamRules } from './pages/ExamRules/ExamRules';
+import { Score } from './pages/Score/Score';
+
 import { StudentContext } from './context/studentContext';
 import {ExamContext}  from './context/examContext';
 import RequireEnroll from './hocs/requireEnroll'
@@ -28,6 +30,8 @@ function App() {
               <RequireEnroll exact path='/exam' component={Exam}/>
               
               <RequireEnroll exact path='/rules' component={ExamRules}/>
+
+              <RequireEnroll exact path='/score' component={Score}/>
 
         </ExamContext.Provider>         
 

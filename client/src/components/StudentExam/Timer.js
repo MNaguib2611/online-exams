@@ -17,7 +17,7 @@ export const  Timer = (props)=>{
                     setExam({...exam,durationInMins:mins})
                     setSecs(59)
                     setMins(mins => mins - 1);
-
+                    localStorage.setItem('durationInMins',JSON.stringify(mins));
                 }else{
                     console.log("time is up");
                     clearInterval(interval);
@@ -25,7 +25,7 @@ export const  Timer = (props)=>{
                 }
                 
             }
-          }, 1000);
+          }, 100);
 
         return () => clearInterval(interval);
     },[mins,secs]);
