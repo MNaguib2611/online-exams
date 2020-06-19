@@ -1,40 +1,55 @@
-import React, { useContext,useState } from 'react';
-import { BrowserRouter, Switch} from 'react-router-dom';
+import React, { useState } from 'react';
+import { ToastProvider } from 'react-toast-notifications';
+import { BrowserRouter, Switch } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import Home from './pages/Home/Home';
 import { Exam } from './pages/Exam/Exam';
 import { ExamRules } from './pages/ExamRules/ExamRules';
 import { Score } from './pages/Score/Score';
-
-import { StudentContext } from './context/studentContext';
-import {ExamContext}  from './context/examContext';
-import RequireEnroll from './hocs/requireEnroll'
-import RequireNotEnroll from './hocs/requireNotEnroll'
+import { ExamContext } from './context/examContext';
+import RequireEnroll from './hocs/requireEnroll';
+import RequireNotEnroll from './hocs/requireNotEnroll';
+import RequireAuth from './hocs/requireAuth';
+import TeacherHome from './pages/TeacherHome/TeacherHome';
+import { TeacherContext } from './context/teacherContext';
+import TeacherHeader from './components/TeacherHeader/TeacherHeader';
+import TeacherNewExam from './pages/TeacherNewExam/TeacherNewExam';
+import TeacherEditExam from './pages/TeacherEditExam/TeacherEditExam';
 function App() {
-  const context = useContext(StudentContext);
-  console.log(context);
   const [exam, setExam] = useState({});
-
-
+  const [teacher, setTeacher] = useState({});
 
   return (
     <div className='App'>
       <BrowserRouter>
         <Switch>
+          <RequireNotEnroll exact path='/' component={Home} />
 
-        <ExamContext.Provider value={{ exam, setExam }}>
+          <TeacherContext.Provider value={{ teacher, setTeacher }}>
+            <RequireAuth component={TeacherHeader} />
+            <ToastProvider autoDismissTimeout={500}>
+              <RequireAuth exact path='/teacher' component={TeacherHome} />
+              <RequireAuth
+                exact
+                path='/teacher/new'
+                component={TeacherNewExam}
+              />
+              <RequireAuth
+                exact
+                path='/teacher/:id/edit'
+                component={TeacherEditExam}
+              />
+            </ToastProvider>
+          </TeacherContext.Provider>
 
-              <RequireNotEnroll exact path='/' component={Home}/>
-             
-              <RequireEnroll exact path='/exam' component={Exam}/>
-              
-              <RequireEnroll exact path='/rules' component={ExamRules}/>
+          <ExamContext.Provider value={{ exam, setExam }}>
+            <RequireEnroll exact path='/exam' component={Exam} />
 
-              <RequireEnroll exact path='/score' component={Score}/>
+            <RequireEnroll exact path='/rules' component={ExamRules} />
 
-        </ExamContext.Provider>         
-
+            <RequireEnroll exact path='/score' component={Score} />
+          </ExamContext.Provider>
         </Switch>
       </BrowserRouter>
     </div>

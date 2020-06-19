@@ -25,13 +25,13 @@ body {
   margin: 8rem auto;
 }
 
-.rules-container{
+.rules-container {
   padding: 1rem 2rem 2rem 2rem;
   background-color: #fff;
   max-width: 98%;
   margin: 5rem auto;
 }
-.examDiv{
+.examDiv {
   background-size: cover;
   height: 100%;
   width: 100%;
@@ -91,14 +91,14 @@ body {
 .hidden {
   display: none;
 }
- 
+
 .pagination {
   display: inline-block;
-  text-align: center ;
+  text-align: center;
   box-shadow: 0px 0px 10px;
   margin: auto;
 }
-.center-pagination{
+.center-pagination {
   text-align: center;
   margin: auto;
   margin-top: 15px;
@@ -113,12 +113,14 @@ body {
 }
 
 .pagination a.active {
-  background-color:  rgb(59, 122, 173);
+  background-color: rgb(59, 122, 173);
   color: white;
   border: 1px solid rgb(35, 82, 121);
 }
 
-.pagination a:hover:not(.active) {background-color: #ddd;}
+.pagination a:hover:not(.active) {
+  background-color: #ddd;
+}
 
 .pagination a:first-child {
   border-top-left-radius: 5px;
@@ -130,17 +132,129 @@ body {
   border-bottom-right-radius: 5px;
 }
 
-.question-div{
-  margin:2rem 1rem 2rem 1rem;
-  padding: 1rem 1rem ;
-  opacity: .8;
+.question-div {
+  margin: 2rem 1rem 2rem 1rem;
+  padding: 1rem 1rem;
+  opacity: 0.8;
 }
 
-ul{
+/* ul {
   margin-top: 2rem;
   list-style: none;
-}
-li{
+} */
+/* li {
   margin-bottom: 4rem;
   line-height: 16px;
+} */
+
+/* Teacher */
+.navbar {
+  padding: 0 1rem;
+}
+
+.navbar .navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bolder;
+}
+
+nav.bg-dark {
+  background-color: #1f325c !important;
+}
+
+#my-nav .nav-item {
+  padding: 0.5rem 0.2rem 0.2rem 0.2rem;
+  font-weight: bold;
+  margin-left: 0.5rem;
+}
+
+.nav-link.active,
+.nav-link:hover {
+  background-color: #ec9926;
+}
+
+thead {
+  color: #fff;
+  background: #1f325c;
+}
+.table thead th {
+  border: none;
+}
+
+table.table {
+  box-shadow: -2px 4px 6px -4px rgba(0, 0, 0, 0.75);
+}
+
+.action {
+  color: rgb(79, 107, 158);
+  border: 1px solid;
+  border-radius: 1rem;
+  width: 2rem;
+  padding: 3px 10px;
+  margin-right: 7px;
+}
+
+.action:hover {
+  text-decoration: none;
+  color: #ec9926;
+}
+
+.exam-card {
+  box-shadow: -2px 4px 6px -4px rgba(0, 0, 0, 0.75);
+}
+
+.exam-card .heading {
+  color: #fff;
+  background: #1f325c;
+  text-align: center;
+  padding: 1rem;
+}
+
+.exam-card .body {
+  padding: 1rem;
+}
+
+.exam-key span {
+  background-color: #dfdfdf;
+  padding: 7px;
+  border-radius: 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 140px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -75px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
 }

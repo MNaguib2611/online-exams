@@ -1,5 +1,16 @@
 const uniqid = require('uniqid');
 const Exam = require('../models/ExamModel');
+const Teacher = require('../models/TeacherModel');
+
+exports.listExams = async (req, res) => {
+  try {
+    const exams = await Exam.find({ teacher: req.body.userId });
+    const teacher = await Teacher.findById(req.body.userId);
+    res.send({ exams, teacher });
+  } catch (error) {
+    res.status(500).send({ msg: error.message });
+  }
+};
 
 // Teacher can create exam
 exports.createExam = async (req, res) => {
@@ -99,10 +110,10 @@ exports.updateQuestion = async (req, res) => {
   question.correctAnswer = req.body.correctAnswer || question.correctAnswer;
   exam
     .save()
-    .then(result => {
+    .then((result) => {
       res.send(result);
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send(err);
     });
 
@@ -132,26 +143,28 @@ exports.updateQuestion = async (req, res) => {
     question.correctAnswer = req.body.correctAnswer || question.correctAnswer;
     exam
       .save()
-      .then(result => {
+      .then((result) => {
         res.send(result);
       })
-      .catch(err => {
+      .catch((err) => {
         res.status(500).send(err);
       });
   });
 };
 
+exports.getExamById = async (req, res) => {
+  Exam.findById(req.params.id, (err, exam) => {
+    if (err) return res.status(500).send(err);
+    else if (!exam) return res.status(404).send();
+    res.send({ exam });
+  });
+};
 
-exports.getExamById  = async (req, res) => {
-  Exam.findById(
-    req.params.id,
-    (err, exam) => {
-      if (err) return res.status(500).send(err);
-      else if (!exam) return res.status(404).send();
-      res.send({exam });
-    }
-  );
-}
+exports.getMyExamById = async (req, res) => {
+  const exam = await Exam.findOne({ _id: req.params.id, teacher: req.body.userId });
+  if (!exam) return res.status(404).send({ msg: 'exam not found!' });
+  return res.send(exam);
+};
 
 exports.deleteQuestion = (req, res) => {
   Exam.findByIdAndUpdate(

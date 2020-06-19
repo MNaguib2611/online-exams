@@ -24,11 +24,6 @@ export const StudentEnroll = () => {
     setEmail(e.target.value);
   };
 
-  const clearInputs = () => {
-    setExamKey('');
-    setName('');
-    setEmail('');
-  };
 
 
   const fetchExam =  () => {

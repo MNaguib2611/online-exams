@@ -3,7 +3,7 @@ const TeacherController = require('../controllers/TeacherController.js');
 
 const router = new Router();
 
-router.get('/login', (req, res) => {
+router.post('/login', (req, res) => {
   TeacherController.login(req, res);
 });
 
