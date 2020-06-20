@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import axios from '../../axios';
 import { useToasts } from 'react-toast-notifications';
-import { useHistory } from 'react-router-dom';
 
 const TeacherQuestion = (props) => {
   const { addToast } = useToasts();
-  const history = useHistory();
   const [title, setTitle] = useState('');
   const [firstChoice, setFirstChoice] = useState('');
   const [secondChoice, setSecondChoice] = useState('');
@@ -84,19 +82,23 @@ const TeacherQuestion = (props) => {
         }
       )
       .then((result) => {
-        addToast('Question added successfully', { appearance: 'success' });
-        if (singleMode) return history.push('/teacher');
-
+        addToast('Question added successfully', {
+          appearance: 'info',
+          autoDismiss: true,
+        });
         clearInputs();
+        if (singleMode) {
+          props.handleShowForm();
+          props.fetchExam();
+        }
       })
       .catch((err) => {
         console.log(err.response.data);
-        // setError(err.response.data);
       });
   };
 
   return (
-    <section id='new-exam'>
+    <section id='new-exam' className="drop-back">
       <div className='container'>
         <div className='row'>
           <div className='col-md-8 offset-2'>
@@ -163,6 +165,13 @@ const TeacherQuestion = (props) => {
                   onClick={handleSubmitAndAdd}
                 >
                   Add and Add Another Question
+                </button>
+
+                <button
+                  className='btn btn-danger ml-3'
+                  onClick={props.handleShowForm}
+                >
+                  Cancel
                 </button>
               </div>
             </div>

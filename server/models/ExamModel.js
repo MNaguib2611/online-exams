@@ -25,6 +25,10 @@ const ExamSchema = mongoose.Schema(
       type: Date,
       required: true,
     },
+    duration: {
+      type: Number,
+      required: true,
+    },
     rules: [{ type: String }],
     questions: [
       {
@@ -32,7 +36,6 @@ const ExamSchema = mongoose.Schema(
         questionStatement: String,
         correctAnswer: String,
       },
-    
     ],
     durationInMins: Number,
     // answers:{
@@ -42,15 +45,13 @@ const ExamSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-
-
-ExamSchema.methods.toJSON = function() {
-    const obj = this.toObject();
-    obj.questions.forEach(question => {
-        delete question.correctAnswer;
-    });
-    return obj;
-   }
+ExamSchema.methods.toJSON = function () {
+  const obj = this.toObject();
+  obj.questions.forEach((question) => {
+    delete question.correctAnswer;
+  });
+  return obj;
+};
 const ExamModel = mongoose.model('Exam', ExamSchema);
 
 module.exports = ExamModel;

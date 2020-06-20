@@ -1,17 +1,59 @@
 import React from 'react';
 import { useToasts } from 'react-toast-notifications';
 import { Link } from 'react-router-dom';
+import axios from '../../axios';
 
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 const TeacherExamList = (props) => {
   const { addToast } = useToasts();
 
+  const handleExamDelete = (id) => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className='exam-card'>
+            <div className='heading'>
+              <h5>Are you sure you want to delete this question?</h5>
+            </div>
+            <div className='body'>
+              <button
+                className='btn btn-blue mr-2'
+                onClick={() => {
+                  axios
+                    .delete('/exams/' + id, {
+                      headers: {
+                        'x-access-token': localStorage.getItem('teacherToken'),
+                      },
+                    })
+                    .then((res) => {
+                      onClose();
+                      props.fetchExams();
+                    })
+                    .catch((err) => console.log(err));
+                }}
+              >
+                Yes, Delete it!
+              </button>
+              <button className='btn btn-danger' onClick={onClose}>
+                No
+              </button>
+            </div>
+          </div>
+        );
+      },
+    });
+  };
   const handleCopy = (key) => {
     const el = document.createElement('textarea');
     el.value = key;
     document.body.appendChild(el);
     el.select();
     document.execCommand('copy');
-    addToast('Exam Key Copied', { appearance: 'success' });
+    addToast('Exam Key Copied', {
+      appearance: 'info',
+      autoDismiss: true,
+    });
 
     el.remove();
   };
@@ -47,15 +89,8 @@ const TeacherExamList = (props) => {
                         {exam.key}
                       </span>
                     </td>
-                    <td>{exam.createdAt}</td>
+                    <td>{new Date(exam.createdAt).toDateString()}</td>
                     <td>
-                      <Link
-                        to={'/teacher/' + exam._id + '/edit'}
-                        className='action'
-                      >
-                        <i className='fas fa-eye'></i>
-                      </Link>
-
                       <Link
                         to={'/teacher/' + exam._id + '/edit'}
                         className='action'
@@ -63,9 +98,14 @@ const TeacherExamList = (props) => {
                         <i className='fas fa-pen'></i>
                       </Link>
 
-                      <a href='#' className='action'>
+                      <span
+                        className='action'
+                        onClick={() => {
+                          handleExamDelete(exam._id);
+                        }}
+                      >
                         <i className='fas fa-trash'></i>
-                      </a>
+                      </span>
                     </td>
                   </tr>
                 ))}

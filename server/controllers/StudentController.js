@@ -4,22 +4,30 @@ const Exam = require('../models/ExamModel');
 const Student = require('../models/StudentModel');
 const sendMail = require('../email');
 const StudentModel = require('../models/StudentModel');
+const { reset } = require('nodemon');
 // Student can submit his answers
 const sendAnswers = async (req, res) => {
   const studentAnswers = req.body.answers;
   try {
-    const exam = await Exam.findOne({ key: req.body.key });
+    const exam = await Exam.findById(req.body.examId);
+
+    const student = await Student.findById(req.body.userId);
+    if (!student) return res.status(404).send();
+
+    if (student.score !== null) {
+      return res.status(401).send({ msg: 'you did this exam before' });
+    }
     let score = 0;
 
     studentAnswers.forEach((studentAnswer) => {
       const isRightAnswer = exam.questions.filter(
         (answer) => answer.correctAnswer == studentAnswer.answer
       );
-      if (isRightAnswer) score++;
-
-      // if (studentAnswer.answer === exam.answers[studentAnswer._id]) score++;
+      if (isRightAnswer.length) score++;
     });
-    if (!exam) res.status(404).send();
+
+    student.score = score;
+    await student.save();
     sendMail(student.email, 'studentScore', {
       studentName: student.name,
       examName: exam.name,
@@ -41,17 +49,21 @@ const getExamByCode = (req, res) => {
           name: req.body.name,
           email: req.body.email,
           exam: exam._id,
-          score: 0,
+          score: null,
           startedAt: null,
         });
         student
           .save()
           .then((result) => {
-            let token = jwt.sign({ id: result._id }, process.env.SECRET, {
-              expiresIn: 86400, // expires in 24 hours
-            });
+            console.log(exam);
+            let token = jwt.sign(
+              { studentId: result._id, examId: exam.id },
+              process.env.SECRET,
+              {
+                expiresIn: 86400, // expires in 24 hours
+              }
+            );
             res.status(200).json({
-              exam,
               token,
             });
             sendMail(student.email, 'enrolledInExam', {
@@ -59,11 +71,10 @@ const getExamByCode = (req, res) => {
               examName: exam.name,
             });
           })
-          .catch((err) =>{
+          .catch((err) => {
             console.log(err);
-            res.status(400).json({ msg: 'you already enrolled for this exam' })
-          }
-          );
+            res.status(400).json({ msg: 'you already enrolled for this exam' });
+          });
       } else if (exam.startDate > Date.now()) {
         res.status(401).json({ msg: "Exam hasn't started yet" });
       } else {
@@ -80,9 +91,10 @@ const authenticate = async (req, res, next) => {
         req.headers['x-access-token'],
         process.env.SECRET
       );
-      let student = StudentModel.find({ _id: decoded.id });
+      let student = StudentModel.find({ _id: decoded.studentId });
       if (student) {
-        req.body.userId = decoded.id;
+        req.body.userId = decoded.studentId;
+        req.body.examId = decoded.examId;
         next();
       } else {
         return res.status(401).send('Not authorized.');
@@ -99,10 +111,10 @@ const authenticate = async (req, res, next) => {
 };
 
 const studentStartExam = (req, res) => {
-  Student.findOne({ exam: req.body.exam, email: req.body.email }).exec(
+  Student.findOne({ exam: req.body.examId, _id: req.body.userId }).exec(
     (err, student) => {
       if (student && student.startedAt === null) {
-        Exam.findOne({ _id: req.body.exam }).exec((err, exam) => {
+        Exam.findOne({ _id: req.body.examId }).exec((err, exam) => {
           student.startedAt = Date.now();
           student.save();
           const startedExam = new Date()
@@ -124,9 +136,18 @@ const studentStartExam = (req, res) => {
   );
 };
 
+const getExamData = async (req, res) => {
+  const exam = await Exam.findById(req.body.examId);
+  const student = await Student.findById(req.body.userId);
+
+  if (!exam || !student) return res.status(404).send({ msg: 'invalid auth' });
+  res.send({ exam, student });
+};
+
 module.exports = {
   sendAnswers,
   getExamByCode,
   studentStartExam,
   authenticate,
+  getExamData,
 };

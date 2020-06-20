@@ -1,7 +1,8 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 
 const TeacherHeader = () => {
+  const history = useHistory();
   return (
     <nav className='navbar navbar-expand-lg navbar-dark bg-dark'>
       <a className='navbar-brand'>
@@ -41,6 +42,19 @@ const TeacherHeader = () => {
               <i className='fas fa-pen'></i>
               <span>Add Exam</span>
             </NavLink>
+          </li>
+
+          <li>
+            <span
+              className='nav-link d-flex flex-column justify-content-center align-items-center'
+              onClick={() => {
+                localStorage.removeItem('teacherToken');
+                history.push('/');
+              }}
+            >
+              <i className='fas fa-sign-out-alt'></i>
+              <span>Logout</span>
+            </span>
           </li>
         </ul>
       </div>

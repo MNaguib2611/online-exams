@@ -12,6 +12,7 @@ const NewExamForm = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [rules, setRules] = useState('');
+  const [duration, setDuration] = useState();
 
   const handleStartDate = (date) => {
     setStartDate(date);
@@ -29,6 +30,10 @@ const NewExamForm = () => {
     setRules(e.target.value);
   };
 
+  const handleExamDuration = (e) => {
+    setDuration(e.target.value);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!examName || !startDate || !endDate)
@@ -39,7 +44,7 @@ const NewExamForm = () => {
     axios
       .post(
         '/exams',
-        { startDate, endDate, rules, name: examName },
+        { startDate, endDate, rules, name: examName, duration },
         {
           headers: {
             'x-access-token': localStorage.getItem('teacherToken'),
@@ -47,7 +52,10 @@ const NewExamForm = () => {
         }
       )
       .then((result) => {
-        addToast('Exam Added Successfully', { appearance: 'success' });
+        addToast('Exam Added Successfully', {
+          appearance: 'info',
+          autoDismiss: true,
+        });
         history.push('/teacher');
       })
       .catch((err) => {
@@ -83,6 +91,16 @@ const NewExamForm = () => {
                       className='form-control'
                       placeholder='exam rules'
                       onChange={handleExamRules}
+                    />
+                  </div>
+
+                  <div className='form-group'>
+                    <input
+                      type='number'
+                      className='form-control'
+                      placeholder='enter duration in minutes'
+                      value={duration}
+                      onChange={handleExamDuration}
                     />
                   </div>
                   <div className='form-group'>

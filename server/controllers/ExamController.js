@@ -14,9 +14,9 @@ exports.listExams = async (req, res) => {
 
 // Teacher can create exam
 exports.createExam = async (req, res) => {
-  const { userId, rules, startDate, endDate, name } = req.body;
+  const { userId, rules, startDate, endDate, name, duration } = req.body;
 
-  if (rules.length && startDate && endDate && name && userId) {
+  if ((rules.length && startDate && endDate && name && userId && duration)) {
     const exam = new Exam({
       teacher: userId,
       key: uniqid(),
@@ -24,6 +24,7 @@ exports.createExam = async (req, res) => {
       endDate,
       rules,
       name,
+      duration,
     });
     try {
       await exam.save();
@@ -161,9 +162,12 @@ exports.getExamById = async (req, res) => {
 };
 
 exports.getMyExamById = async (req, res) => {
-  const exam = await Exam.findOne({ _id: req.params.id, teacher: req.body.userId });
+  const exam = await Exam.findOne({
+    _id: req.params.id,
+    teacher: req.body.userId,
+  });
   if (!exam) return res.status(404).send({ msg: 'exam not found!' });
-  return res.send(exam);
+  return res.json(exam);
 };
 
 exports.deleteQuestion = (req, res) => {

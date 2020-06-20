@@ -1,36 +1,38 @@
-import React,{useState} from 'react';
-const BookHome = ({ currentQuestion, currentPage,answers,setAnswers }) => {
-    const handleChange = (e) =>{
-        let newAnswers = {   ...answers}
-        newAnswers[currentQuestion._id]=e.target.value
-        setAnswers(newAnswers);
-    }
+import React, { useState, useEffect } from 'react';
 
+const Question = ({ question, handleNewAnswer, answer, visibleQuestion }) => {
+  const [choice, setChoice] = useState(answer);
+  const handleChoice = (e) => {
+    setChoice(e.target.value);
+    handleNewAnswer(question._id, e.target.value);
+  };
 
   return (
-    <div className="question-div">
-    <h2> <strong>{currentPage}-</strong> {currentQuestion.questionStatement}</h2>
-    <hr/>
-    <ul>
-        {
-            currentQuestion.answers.map((answer)=>{
-               return  <li key={answer}>
-               <label>
-                <input
-                  name="answer"
-                  type="radio"
-                  value={answer}
-                  onChange={handleChange}
-                />
+    <div className={visibleQuestion ? '' : 'hidden'}>
+      <h2 className='text-center'>{question.questionStatement}</h2>
+      <div className='choices'>
+        <ul>
+          {question.answers.map((answer, index) => (
+            <li key={answer}>
+              <input
+                type='radio'
+                name={question.questionStatement}
+                id={'f-option-' + index + answer.replace(/\s/g, '')}
+                checked={choice === answer}
+                value={answer}
+                onChange={handleChoice}
+              />
+              <label htmlFor={'f-option-' + index + answer.replace(/\s/g, '')}>
                 {answer}
               </label>
-               
-               </li>
-            })
-        }
-    </ul>
+
+              <div className='check'></div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
 
-export default BookHome;
+export default Question;

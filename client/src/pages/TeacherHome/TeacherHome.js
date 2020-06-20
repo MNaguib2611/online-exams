@@ -4,7 +4,7 @@ import { TeacherContext } from './../../context/teacherContext';
 import axios from './../../axios';
 const TeacherHome = () => {
   const context = useContext(TeacherContext);
-  useEffect(() => {
+  const fetchExams = () => {
     axios
       .get('exams', {
         headers: {
@@ -20,11 +20,17 @@ const TeacherHome = () => {
       .catch((err) => {
         localStorage.removeItem('teacherToken');
       });
+  };
+  useEffect(() => {
+    fetchExams();
   }, []);
   return (
     (context.teacher.exams && (
       <>
-        <TeacherExamList exams={context.teacher.exams} />
+        <TeacherExamList
+          exams={context.teacher.exams}
+          fetchExams={fetchExams}
+        />
       </>
     )) || <h1>Loading</h1>
   );

@@ -13,6 +13,7 @@ const TeacherExamDetails = ({ exam }) => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [rules, setRules] = useState('');
+  const [duration, setDuration] = useState();
 
   useEffect(() => {
     setTitle(exam.name);
@@ -20,6 +21,7 @@ const TeacherExamDetails = ({ exam }) => {
     setStartDate(new Date(exam.startDate));
     setEndDate(new Date(exam.endDate));
     setRules(exam.rules);
+    setDuration(exam.duration);
   }, []);
   const handleStartDate = (date) => {
     setStartDate(date);
@@ -37,6 +39,10 @@ const TeacherExamDetails = ({ exam }) => {
     setRules(e.target.value);
   };
 
+  const handleExamDuration = (e) => {
+    setDuration(e.target.value);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!examName || !startDate || !endDate)
@@ -47,7 +53,7 @@ const TeacherExamDetails = ({ exam }) => {
     axios
       .put(
         '/exams/' + exam._id,
-        { startDate, endDate, rules, name: examName },
+        { startDate, endDate, rules, name: examName, duration },
         {
           headers: {
             'x-access-token': localStorage.getItem('teacherToken'),
@@ -56,7 +62,10 @@ const TeacherExamDetails = ({ exam }) => {
       )
       .then((result) => {
         setTitle(examName);
-        addToast('Exam Saved Successfully', { appearance: 'success' });
+        addToast('Exam Saved Successfully', {
+          appearance: 'info',
+          autoDismiss: true,
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -91,6 +100,17 @@ const TeacherExamDetails = ({ exam }) => {
                   onChange={handleExamRules}
                 />
               </div>
+
+              <div className='form-group'>
+                <input
+                  type='number'
+                  className='form-control'
+                  placeholder='enter duration in minutes'
+                  value={duration}
+                  onChange={handleExamDuration}
+                />
+              </div>
+
               <div className='form-group'>
                 <label className='mr-2'>Start Date:</label>
                 <DatePicker selected={startDate} onChange={handleStartDate} />

@@ -2,10 +2,15 @@ import React, { useEffect, useState } from 'react';
 import TeacherQuestion from '../../components/TeacherQuestion/TeacherQuestion';
 import axios from '../../axios';
 import TeacherExamDetails from '../../components/TeacherExamDetails/TeacherExamDetails';
+import TeacherExamQuestions from '../../components/TeacherExamQuestions/TeacherExamQuestions';
 
 const TeacherEditExam = (props) => {
   const [exam, setExam] = useState();
-  useEffect(() => {
+  const [showForm, setShowForm] = useState(false);
+  const handleShowForm = () => {
+    setShowForm(!showForm);
+  };
+  const fetchExam = () => {
     axios
       .get('/exams/' + props.match.params.id + '/me', {
         headers: {
@@ -13,78 +18,36 @@ const TeacherEditExam = (props) => {
         },
       })
       .then((result) => {
+        console.log(result);
         setExam(result.data);
       })
       .catch((err) => {
         console.log(err);
       });
+  };
+  useEffect(() => {
+    fetchExam();
   }, []);
   return (
     (exam && (
       <>
         <TeacherExamDetails exam={exam} />
-        {/* <TeacherExam examId={props.match.params.id} /> */}
-        {/* <TeacherQuestion examId={props.match.params.id} /> */}
+        {showForm && (
+          <TeacherQuestion
+            examId={exam._id}
+            handleShowForm={handleShowForm}
+            fetchExam={fetchExam}
+          />
+        )}
+
+        <TeacherExamQuestions
+          fetchExam={fetchExam}
+          exam={exam}
+          handleShowForm={handleShowForm}
+        />
       </>
     )) || <h1>Loading</h1>
   );
 };
 
 export default TeacherEditExam;
-
-// import React, { useEffect, useState } from 'react';
-// import axios from '../../axios';
-
-// const TeacherExam = ({ examId }) => {
-
-//   return (
-//     (exam && (
-//       <section id='exam-list'>
-//         <div className='container'>
-//           <div className='row'>
-//             <div className='col-md-10 offset-1'>
-//               <table className='table mt-5'>
-//                 <thead>
-//                   <tr>
-//                     <th colSpan='5'>
-//                       <h3 className='text-center text-uppercase'>
-//                         {exam.name + ' Exam'}
-//                       </h3>
-//                     </th>
-//                   </tr>
-//                   <tr>
-//                     <th>Exam Name</th>
-//                     <th>Exam Key</th>
-//                     <th>Created At</th>
-//                     <th>Action</th>
-//                   </tr>
-//                 </thead>
-//                 <tbody>
-//                   <tr>
-//                     <td>php</td>
-//                     <td>@fodj575f4</td>
-//                     <td>2020-6-12</td>
-//                     <td>
-//                       <a href='#' class='action'>
-//                         <i class='fas fa-eye'></i>
-//                       </a>
-//                       <a href='#' class='action'>
-//                         <i class='fas fa-pen'></i>
-//                       </a>
-
-//                       <a href='#' class='action'>
-//                         <i class='fas fa-trash'></i>
-//                       </a>
-//                     </td>
-//                   </tr>
-//                 </tbody>
-//               </table>
-//             </div>
-//           </div>
-//         </div>
-//       </section>
-//     )) || <h1>Loading</h1>
-//   );
-// };
-
-// export default TeacherExam;

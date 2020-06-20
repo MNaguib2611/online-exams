@@ -1,7 +1,7 @@
-import React, { useState ,useContext} from 'react';
+import React, { useState, useContext } from 'react';
 import axios from '../../axios';
 import { ExamContext } from '../../context/examContext';
-import {useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 
 export const StudentEnroll = () => {
   const history = useHistory();
@@ -9,8 +9,7 @@ export const StudentEnroll = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
-  const {exam,setExam}= useContext(ExamContext);
-
+  const { exam, setExam } = useContext(ExamContext);
 
   const handleExamKey = (e) => {
     setExamKey(e.target.value);
@@ -24,19 +23,15 @@ export const StudentEnroll = () => {
     setEmail(e.target.value);
   };
 
-
-
-  const fetchExam =  () => {
+  const fetchExam = () => {
     axios
       .post('/students/enroll', { name, key: examKey, email })
       .then((exam) => {
-        console.log(exam.data)
+        console.log(exam.data);
         setExam(exam.data.exam);
-        const enrollmentData = {
-          examId:exam.data.exam._id
-        }
-        localStorage.setItem('enrollmentData',JSON.stringify(enrollmentData));
-        history.push("/rules");
+
+        localStorage.setItem('studentToken', exam.data.token);
+        history.push('/rules');
       })
       .catch((err) => {
         setError(err.response.data.msg);
@@ -96,5 +91,3 @@ export const StudentEnroll = () => {
     </div>
   );
 };
-
-
