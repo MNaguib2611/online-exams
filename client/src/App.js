@@ -16,6 +16,8 @@ import { TeacherContext } from './context/teacherContext';
 import TeacherHeader from './components/TeacherHeader/TeacherHeader';
 import TeacherNewExam from './pages/TeacherNewExam/TeacherNewExam';
 import TeacherEditExam from './pages/TeacherEditExam/TeacherEditExam';
+import TeacherExamStatus from "./pages/TeacherExamStatus/TeacherExamStatus.js";
+
 function App() {
   const [exam, setExam] = useState({});
   const [teacher, setTeacher] = useState({});
@@ -39,6 +41,13 @@ function App() {
                   path='/teacher/new'
                   component={TeacherNewExam}
                 />
+
+                <RequireAuth 
+                  exact 
+                  path="/exam/:id/:examName" 
+                  component={TeacherExamStatus}
+                />
+
                 <RequireAuth
                   exact
                   path='/teacher/:id/edit'

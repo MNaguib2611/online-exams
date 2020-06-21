@@ -19,4 +19,8 @@ router.get('/home', TeacherController.authenticate, (req, res) =>
   res.send('Hello World!')
 );
 
+router.get("/getExamStatus/:id", TeacherController.authenticate, (req, res)=>{
+  TeacherController.getExamStatus(req, res);
+});
+
 module.exports = router;

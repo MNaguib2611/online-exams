@@ -1,4 +1,5 @@
 const TeacherModel = require('../models/TeacherModel.js');
+const StudentModel = require("../models/StudentModel.js");
 const TeacherController = {};
 
 var bodyParser = require('body-parser');
@@ -75,5 +76,10 @@ TeacherController.authenticate = async (req, res, next) => {
     return res.status(403).send({ auth: false, message: 'No token provided.' });
   }
 };
+
+TeacherController.getExamStatus = async (req, res)=>{
+  let Students = await StudentModel.find({exam: req.params.id}).where("score").ne(null).sort({'_id': -1}).limit(15);
+  res.status(200).send(Students);
+}
 
 module.exports = TeacherController;

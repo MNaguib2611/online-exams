@@ -79,7 +79,7 @@ const TeacherExamList = (props) => {
               <tbody>
                 {props.exams.map((exam) => (
                   <tr key={exam._id}>
-                    <td>{exam.name}</td>
+                    <td><Link exact to={`/exam/${exam._id}/${exam.name}`}>{exam.name}</Link></td>
                     <td className='exam-key'>
                       <span
                         onClick={() => {
