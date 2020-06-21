@@ -25,6 +25,7 @@ function App() {
   return (
     <div className='App'>
       <BrowserRouter>
+      <ToastProvider autoDismissTimeout={2000}>
         <ExamContext.Provider value={{ exam, setExam }}>
           <Switch>
             <RequireNotEnroll exact path='/' component={Home} />
@@ -34,7 +35,6 @@ function App() {
 
             <TeacherContext.Provider value={{ teacher, setTeacher }}>
               <RequireAuth component={TeacherHeader} />
-              <ToastProvider autoDismissTimeout={2000}>
                 <RequireAuth exact path='/teacher' component={TeacherHome} />
                 <RequireAuth
                   exact
@@ -53,10 +53,10 @@ function App() {
                   path='/teacher/:id/edit'
                   component={TeacherEditExam}
                 />
-              </ToastProvider>
             </TeacherContext.Provider>
           </Switch>
         </ExamContext.Provider>
+        </ToastProvider>
       </BrowserRouter>
     </div>
   );

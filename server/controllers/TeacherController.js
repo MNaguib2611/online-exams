@@ -22,7 +22,7 @@ TeacherController.register = async (req, res) => {
   } catch (err) {
     console.log('error in register a teacher.');
     console.log(err);
-    res.status(500).send('There was a problem registering the user.');
+    res.status(500).send('There was a problem registering the user,please check all inputs. ');
   }
 };
 
