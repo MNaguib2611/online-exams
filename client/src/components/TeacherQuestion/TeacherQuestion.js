@@ -66,6 +66,13 @@ const TeacherQuestion = (props) => {
     ) {
       return setError('right answer does not match any answer');
     }
+    else if (
+      firstChoice === secondChoice || 
+      firstChoice !== thirdChoice ||
+      secondChoice !== thirdChoice
+    ) {
+      return setError('Answers can\'t be duplicated!');
+    }
 
     axios
       .put(
