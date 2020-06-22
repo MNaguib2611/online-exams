@@ -20,7 +20,9 @@ const StudentSchema = mongoose.Schema({
         ref: 'Exam'
     },
     score: Number,
-    startedAt: Date
+    startedAt: Date,
+    submittedAt: Date,
+    mustSubmitBefore: Date
 
 }, { timestamps: true });
 

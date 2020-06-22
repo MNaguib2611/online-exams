@@ -35,6 +35,7 @@ const ExamSchema = mongoose.Schema(
         answers: [{ type: String }],
         questionStatement: String,
         correctAnswer: String,
+        QuestionType: String,
       },
     ],
     durationInMins: Number,

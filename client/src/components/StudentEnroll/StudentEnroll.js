@@ -27,7 +27,7 @@ export const StudentEnroll = () => {
     axios
       .post('/students/enroll', { name, key: examKey, email })
       .then((exam) => {
-        console.log(exam.data);
+        console.log("asdas",exam.data);
         setExam(exam.data.exam);
 
         localStorage.setItem('studentToken', exam.data.token);

@@ -17,6 +17,9 @@ const sendAnswers = async (req, res) => {
     if (student.score !== null) {
       return res.status(401).send({ msg: 'you did this exam before' });
     }
+    if (student.mustSubmitBefore < Date.now()) {
+      return res.status(401).send({ msg: 'you have exceeded the time limit' });
+    }
     let score = 0;
 
     studentAnswers.forEach((studentAnswer) => {
@@ -27,6 +30,8 @@ const sendAnswers = async (req, res) => {
     });
 
     student.score = score;
+
+    student.submittedAt=Date.now();
     await student.save();
     sendMail(student.email, 'studentScore', {
       studentName: student.name,
@@ -115,7 +120,9 @@ const studentStartExam = (req, res) => {
     (err, student) => {
       if (student && student.startedAt === null) {
         Exam.findOne({ _id: req.body.examId }).exec((err, exam) => {
-          student.startedAt = Date.now();
+          let startTime = new Date();
+          student.startedAt =startTime
+          student.mustSubmitBefore =new Date(startTime.getTime() + 60000*exam.duration+10000);
           student.save();
           const startedExam = new Date()
             .toISOString()
@@ -127,7 +134,7 @@ const studentStartExam = (req, res) => {
             startedExam,
             duration: exam.durationInMins,
           });
-          res.status(201).json({ msg: `exam started at ${startedExam}` });
+          res.status(201).json({ msg: `exam started at ${startedExam}`,exam:exam });
         });
       } else {
         res.status(404).json({ msg: 'something went wrong' });
@@ -137,10 +144,14 @@ const studentStartExam = (req, res) => {
 };
 
 const getExamData = async (req, res) => {
-  const exam = await Exam.findById(req.body.examId);
+  let exam = await Exam.findById(req.body.examId);
   const student = await Student.findById(req.body.userId);
 
   if (!exam || !student) return res.status(404).send({ msg: 'invalid auth' });
+  if (student.startedAt===null) {
+    console.log("here",student.startedAt);
+    exam = {"rules":exam.rules,"duration":exam.duration,"endDate":exam.endDate}
+  }
   res.send({ exam, student });
 };
 

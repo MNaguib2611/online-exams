@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import TeacherQuestion from '../../components/TeacherQuestion/TeacherQuestion';
+import TeacherTrueFalseQuestion from '../../components/TeacherQuestion/TeacherTrueFalseQuestion';
+
 import axios from '../../axios';
 import TeacherExamDetails from '../../components/TeacherExamDetails/TeacherExamDetails';
 import TeacherExamQuestions from '../../components/TeacherExamQuestions/TeacherExamQuestions';
@@ -7,8 +9,14 @@ import TeacherExamQuestions from '../../components/TeacherExamQuestions/TeacherE
 const TeacherEditExam = (props) => {
   const [exam, setExam] = useState();
   const [showForm, setShowForm] = useState(false);
+  const [TrueORFalseShowForm, setTrueORFalseShowForm] = useState(false);
   const handleShowForm = () => {
+    setTrueORFalseShowForm(false);
     setShowForm(!showForm);
+  };
+  const handleTrueORFalseForm = () => {
+    setShowForm(false);
+    setTrueORFalseShowForm(!TrueORFalseShowForm);
   };
   const fetchExam = () => {
     axios
@@ -39,11 +47,19 @@ const TeacherEditExam = (props) => {
             fetchExam={fetchExam}
           />
         )}
+        {TrueORFalseShowForm && (
+          <TeacherTrueFalseQuestion
+            examId={exam._id}
+            handleTrueORFalseForm={handleTrueORFalseForm}
+            fetchExam={fetchExam}
+          />
+        )}
 
         <TeacherExamQuestions
           fetchExam={fetchExam}
           exam={exam}
           handleShowForm={handleShowForm}
+          handleTrueORFalseForm={handleTrueORFalseForm}
         />
       </>
     )) || <h1>Loading</h1>

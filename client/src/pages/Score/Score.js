@@ -18,7 +18,7 @@ export const Score = () => {
               <div className='body'>
                 <div className='d-flex'>
                   <strong className='mr-4'>Student Name:</strong>
-                  <p className='mr-4'>{context.exam.student.name} minutes</p>
+                  <p className='mr-4'>{context.exam.student.name}</p>
                 </div>
                 <div className='d-flex'>
                   <strong className='mr-4'>Started at:</strong>

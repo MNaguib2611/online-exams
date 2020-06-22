@@ -4,7 +4,8 @@ import { useHistory } from 'react-router-dom';
 import axios from '../../axios';
 
 export const ExamRules = (props) => {
-  const context = useContext(ExamContext);
+  // const context = useContext(ExamContext);
+  const { exam, setExam } = useContext(ExamContext);
 
   const history = useHistory();
   const startExam = () => {
@@ -19,16 +20,18 @@ export const ExamRules = (props) => {
         }
       )
       .then((result) => {
+        setExam(result.data.exam);
         props.getData();
-        history.push('/exam');
+      }).then((result) => {
+       history.push('/exam');
       })
       .catch((err) => {
         console.log(err);
       });
   };
-  useEffect(() => {
-    console.log(context);
-  }, []);
+  // useEffect(() => {
+  //   console.log(context);
+  // }, []);
   return (
     <section id='new-exam'>
       <div className='container'>
@@ -37,25 +40,25 @@ export const ExamRules = (props) => {
             <div className='exam-card mt-5'>
               <div className='heading'>
                 <h3 className='text-capitalize'>
-                  Welcome to {context.exam.exam.name} Exam
+                  Welcome to {exam.exam.name} Exam
                 </h3>
               </div>
               <div className='body'>
                 <div className='d-flex'>
                   <div className='d-flex'>
                     <strong className='mr-4'>Exam Duration:</strong>
-                    <p className='mr-4'>{context.exam.exam.duration} minutes</p>
+                    <p className='mr-4'>{exam.exam.duration} minutes</p>
                   </div>
                   <div className='d-flex'>
                     <strong className='mr-4'>Exam End Date:</strong>
                     <p className='mr-4'>
-                      {new Date(context.exam.exam.endDate).toDateString()}
+                      {new Date(exam.exam.endDate).toDateString()}
                     </p>
                   </div>
                 </div>
                 <div className='d-flex'>
                   <strong className='mr-4'>Exam Rules:</strong>
-                  <p className='mr-4'>{context.exam.exam.rules}</p>
+                  <p className='mr-4'>{exam.exam.rules}</p>
                 </div>
 
                 <button className='btn btn-blue' onClick={startExam}>

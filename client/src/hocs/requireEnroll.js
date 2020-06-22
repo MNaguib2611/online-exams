@@ -14,6 +14,7 @@ const RequireEnroll = ({ component: Component, ...rest }) => {
         },
       })
       .then((result) => {
+        console.log(result.data)
         setExam(result.data);
         if (result.data.student.score !== null) {
           history.push('/score');

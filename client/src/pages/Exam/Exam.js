@@ -88,7 +88,9 @@ export const Exam = (props) => {
                       localStorage.removeItem(
                         'answers' + context.exam.exam._id
                       );
-                      console.log(err);
+                      localStorage.removeItem('studentToken');
+                      localStorage.removeItem('answers' + context.exam.exam._id);
+                      history.push('/');
                     });
                 }}
               >

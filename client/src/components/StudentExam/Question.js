@@ -17,12 +17,12 @@ const Question = ({ question, handleNewAnswer, answer, visibleQuestion }) => {
               <input
                 type='radio'
                 name={question.questionStatement}
-                id={'f-option-' + index + answer.replace(/\s/g, '')}
+                id={question.questionStatement+'f-option-' + index + answer.replace(/\s/g, '')}
                 checked={choice === answer}
                 value={answer}
                 onChange={handleChoice}
               />
-              <label htmlFor={'f-option-' + index + answer.replace(/\s/g, '')}>
+              <label htmlFor={question.questionStatement+'f-option-' + index + answer.replace(/\s/g, '')}>
                 {answer}
               </label>
 
