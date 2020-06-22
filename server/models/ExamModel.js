@@ -38,9 +38,6 @@ const ExamSchema = mongoose.Schema(
       },
     ],
     durationInMins: Number,
-    // answers:{
-    //     "5edd84107b1a6069cbddc465":"islam"
-    // }
   },
   { timestamps: true }
 );

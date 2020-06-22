@@ -65,13 +65,12 @@ const TeacherQuestion = (props) => {
       rightChoice !== thirdChoice
     ) {
       return setError('right answer does not match any answer');
-    }
-    else if (
-      firstChoice === secondChoice || 
-      firstChoice !== thirdChoice ||
-      secondChoice !== thirdChoice
+    } else if (
+      firstChoice === secondChoice ||
+      firstChoice === thirdChoice ||
+      secondChoice === thirdChoice
     ) {
-      return setError('Answers can\'t be duplicated!');
+      return setError("Answers can't be duplicated!");
     }
 
     axios
@@ -105,7 +104,7 @@ const TeacherQuestion = (props) => {
   };
 
   return (
-    <section id='new-exam' className="drop-back">
+    <section id='new-exam' className='drop-back'>
       <div className='container'>
         <div className='row'>
           <div className='col-md-8 offset-2'>
