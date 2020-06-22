@@ -20,6 +20,7 @@ const StudentSchema = mongoose.Schema({
         ref: 'Exam'
     },
     score: Number,
+    percentage:Number,
     startedAt: Date,
     submittedAt: Date,
     mustSubmitBefore: Date

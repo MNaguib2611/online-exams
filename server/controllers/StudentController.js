@@ -30,7 +30,7 @@ const sendAnswers = async (req, res) => {
     });
 
     student.score = score;
-
+    student.percentage = (100*score)/exam.questions.length
     student.submittedAt=Date.now();
     await student.save();
     sendMail(student.email, 'studentScore', {
@@ -38,7 +38,7 @@ const sendAnswers = async (req, res) => {
       examName: exam.name,
       score: score,
     });
-    res.status(200).send({ score });
+    res.status(200).send({ score,percentage });
   } catch (error) {
     res.send(error);
   }

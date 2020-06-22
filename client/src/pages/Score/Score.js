@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 export const Score = () => {
   const context = useContext(ExamContext);
   const history = useHistory();
+  console.log("adssdsa",context.exam.exam);
   return (
     <section id='new-exam'>
       <div className='container'>
@@ -28,8 +29,13 @@ export const Score = () => {
                 </div>
                 <div className='d-flex'>
                   <strong className='mr-4'>Score:</strong>
-                  <p className='mr-4'>{context.exam.student.score}</p>
+                  <p className='mr-4'>
+                  {context.exam.student.score} 
+                  </p>
                 </div>
+                  <p className='mr-4'>
+                  {(context.exam.student.percentage < context.exam.exam.successPercent&& <strong className="text-danger">you have failed  this exam</strong> )|| <strong className="text-success">you have passed  this exam</strong>}
+                  </p>
                 <button
                   className='btn btn-blue'
                   onClick={() => {

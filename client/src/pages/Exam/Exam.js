@@ -79,6 +79,7 @@ export const Exam = (props) => {
                       }
                     )
                     .then((res) => {
+                      console.log("result returned",res)
                       onClose();
                       props.getData();
                       history.push('/score');
