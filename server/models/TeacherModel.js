@@ -19,9 +19,10 @@ const TeacherSchema = mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: false,
       minlength: 8,
     },
+    facebookID: { type: Number },
   },
   { timestamps: true }
 );

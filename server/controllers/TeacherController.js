@@ -28,19 +28,26 @@ TeacherController.register = async (req, res) => {
 
 TeacherController.login = async (req, res) => {
   try {
-    const Teacher = await TeacherModel.findOne({ email: req.body.email });
-    if (Teacher) {
-      const match = await bcrypt.compare(req.body.password, Teacher.password);
-      if (match) {
-        let token = jwt.sign({ id: Teacher._id }, process.env.SECRET, {
-          expiresIn: 86400, // expires in 24 hours
-        });
-        res.status(200).send({ auth: true, token: token });
+    if(req.body.loginMethod === "facebook"){
+      await TeacherController.loginWithFaceBook(req,res);
+    } else {
+      const Teacher = await TeacherModel.findOne({ email: req.body.email });
+      if(Teacher.facebookID){
+        console.log("Teacher Did not create a password, logged with facebook");
+        res.status(409).send("You seem to have logged with your facebook acount.")
+      } else if (Teacher) {
+        const match = await bcrypt.compare(req.body.password, Teacher.password);
+        if (match) {
+          let token = jwt.sign({ id: Teacher._id }, process.env.SECRET, {
+            expiresIn: 86400, // expires in 24 hours
+          });
+          res.status(200).send({ auth: true, token: token });
+        } else {
+          res.status(404).send("Couldn't find the Teacher.");
+        }
       } else {
         res.status(404).send("Couldn't find the Teacher.");
       }
-    } else {
-      res.status(404).send("Couldn't find the Teacher.");
     }
   } catch (err) {
     console.log(err);
@@ -82,4 +89,23 @@ TeacherController.getExamStatus = async (req, res)=>{
   res.status(200).send(Students);
 }
 
+TeacherController.loginWithFaceBook = async (req, res) => {
+  let Teacher = await TeacherModel.findOne({email: req.body.email, facebookID: req.body.facebookID});
+  if(Teacher){
+    let token = jwt.sign({ id: Teacher._id }, process.env.SECRET, {
+      expiresIn: 86400, // expires in 24 hours
+    });
+    res.status(200).send({ auth: true, token: token });        
+  } else {
+    Teacher = new TeacherModel();
+    Teacher.name = req.body.name;
+    Teacher.email = req.body.email;
+    Teacher.facebookID = req.body.facebookID;
+    Teacher.save();
+    let token = jwt.sign({ id: Teacher._id }, process.env.SECRET, {
+      expiresIn: 86400, // expires in 24 hours
+    });
+    res.status(200).send({ auth: true, token: token });
+  }
+}
 module.exports = TeacherController;
