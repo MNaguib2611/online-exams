@@ -224,12 +224,23 @@ const login = async (req, res) => {
   }
 };
 
+
+const getExamCorrectAnswers = async (req, res) => {
+  const exam = await Exam.findById(req.params.id);
+  let examAnswers={}
+  exam.questions.map( (question)=>{
+    examAnswers[question._id] = question.correctAnswer
+  })
+  res.send({ examAnswers });
+};
+
 module.exports = {
   sendAnswers,
   getExamByCode,
   studentStartExam,
   authenticate,
   getExamData,
+  getExamCorrectAnswers,
   register,
   login,
   getExamRules,

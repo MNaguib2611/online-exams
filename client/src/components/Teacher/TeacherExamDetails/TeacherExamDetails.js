@@ -16,6 +16,7 @@ const TeacherExamDetails = ({ exam }) => {
   const [rules, setRules] = useState('');
   const [duration, setDuration] = useState();
   const [successPercent, setSuccessPercent] = useState();
+  const [showAnswers, setShowAnswers] = useState(false);
 
   useEffect(() => {
     setTitle(exam.name);
@@ -49,6 +50,12 @@ const TeacherExamDetails = ({ exam }) => {
     setSuccessPercent(e.target.value);
   };
 
+  const handleShowAnswers = () => {
+   setShowAnswers(!showAnswers);
+  };
+
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (successPercent<0 || successPercent>100 )
@@ -63,7 +70,7 @@ const TeacherExamDetails = ({ exam }) => {
     axios
       .put(
         '/exams/' + exam._id,
-        { startDate, endDate, rules, name: examName, duration,successPercent },
+        { startDate, endDate, rules, name: examName, duration,successPercent ,showAnswers},
         {
           headers: {
             'x-access-token': localStorage.getItem('teacherToken'),
@@ -148,6 +155,14 @@ const TeacherExamDetails = ({ exam }) => {
                   onChange={handleEndDate}
                   value={endDate}
                 />
+              </div>
+              <div className='form-group' title="students can see the correct answers after they finish the exam">
+                    <label className='mr-3'>Show Answers</label>
+                  <input
+                  type="checkbox"
+                  checked={showAnswers}
+                  onChange={handleShowAnswers}
+                  ></input>
               </div>
               {error && <p className='text-danger'>{error}</p>}
               <button className='btn  btn-primary btn-blue' type='submit'>
