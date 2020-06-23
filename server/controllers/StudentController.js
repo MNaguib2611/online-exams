@@ -28,7 +28,8 @@ const sendAnswers = async (req, res) => {
       );
       if (isRightAnswer.length) score++;
     });
-
+    console.log("asdsad");
+    console.log(score,exam.questions.length)
     student.score = score;
     student.percentage = (100*score)/exam.questions.length
     student.submittedAt=Date.now();
@@ -155,10 +156,21 @@ const getExamData = async (req, res) => {
   res.send({ exam, student });
 };
 
+
+const getExamCorrectAnswers = async (req, res) => {
+  const exam = await Exam.findById(req.params.id);
+  let examAnswers={}
+  exam.questions.map( (question)=>{
+    examAnswers[question._id] = question.correctAnswer
+  })
+  res.send({ examAnswers });
+};
+
 module.exports = {
   sendAnswers,
   getExamByCode,
   studentStartExam,
   authenticate,
   getExamData,
+  getExamCorrectAnswers
 };
