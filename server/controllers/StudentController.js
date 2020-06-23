@@ -17,9 +17,18 @@ const sendAnswers = async (req, res) => {
     );
 
     if (!studentExam)
-      return res.status(401).send({ msg: 'you are not enrolled to this exam' });
+      return res.status(403).send({ msg: 'you are not enrolled to this exam' });
 
-    console.log(studentExam);
+    if (studentExam.score)
+      return res.status(403).send({ msg: 'you did this exam before ' });
+
+    const examDuration = exam.duration;
+    const isExpired =
+      new Date(studentExam.startedAt.getTime() + examDuration * 60 * 1000) -
+      new Date();
+    if (isExpired <= 0)
+      return res.status(403).send({ msg: 'exam duration expired' });
+
     let score = 0;
 
     studentAnswers.forEach((studentAnswer) => {
@@ -39,10 +48,11 @@ const sendAnswers = async (req, res) => {
       examName: exam.name,
       score: score,
     });
-    res.status(200).send({ score, percentage, passed });
+    res.status(200).send({ score, percentage: studentExam.percentage, passed });
   } catch (error) {
     console.log(error);
-    res.status(401).send(error);
+
+    res.status(403).send(error);
   }
 };
 
@@ -100,7 +110,7 @@ const authenticate = async (req, res, next) => {
         .send({ auth: false, message: 'Failed to authenticate token.' });
     }
   } else {
-    return res.status(403).send({ auth: false, message: 'No token provided.' });
+    return res.status(401).send({ auth: false, message: 'No token provided.' });
   }
 };
 
@@ -122,10 +132,10 @@ const studentStartExam = async (req, res) => {
     (exam) => String(exam.examId) === String(req.params.id)
   );
   if (!isEnrolled)
-    return res.status(401).send({ msg: 'you are not enrolled to this exam' });
+    return res.status(403).send({ msg: 'you are not enrolled to this exam' });
 
   if (isEnrolled.score)
-    return res.status(401).send({ msg: 'you did this exam before ' });
+    return res.status(403).send({ msg: 'you did this exam before ' });
 
   const exam = await Exam.findById(req.params.id);
 
@@ -179,13 +189,13 @@ const register = async (req, res) => {
     !password ||
     !confirmPassword
   )
-    return res.status(401).send({ msg: 'please fill all fields' });
+    return res.status(403).send({ msg: 'please fill all fields' });
   else if (password !== confirmPassword)
-    return res.status(401).send({ msg: 'password does not match' });
+    return res.status(403).send({ msg: 'password does not match' });
 
   const student = await Student.findOne({ email });
 
-  if (student) return res.status(401).send({ msg: 'email already exist' });
+  if (student) return res.status(403).send({ msg: 'email already exist' });
 
   const hashedPassword = bcrypt.hashSync(req.body.password, 8);
   try {
@@ -224,13 +234,12 @@ const login = async (req, res) => {
   }
 };
 
-
 const getExamCorrectAnswers = async (req, res) => {
   const exam = await Exam.findById(req.params.id);
-  let examAnswers={}
-  exam.questions.map( (question)=>{
-    examAnswers[question._id] = question.correctAnswer
-  })
+  let examAnswers = {};
+  exam.questions.map((question) => {
+    examAnswers[question._id] = question.correctAnswer;
+  });
   res.send({ examAnswers });
 };
 

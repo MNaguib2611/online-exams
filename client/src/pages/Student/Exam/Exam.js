@@ -108,7 +108,7 @@ export const Exam = (props) => {
                       // history.push('/score');
                     })
                     .catch((err) => {
-                      console.log(err);
+                      console.log(err.response);
                       // onClose();
                       // localStorage.removeItem('answers' + exam._id);
                       // localStorage.removeItem('studentToken');
