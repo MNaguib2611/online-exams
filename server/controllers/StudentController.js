@@ -1,11 +1,10 @@
 var jwt = require('jsonwebtoken');
+var bcrypt = require('bcrypt');
 
 const Exam = require('../models/ExamModel');
 const Student = require('../models/StudentModel');
+const StudentExams = require('../models/StudentExamsModel');
 const sendMail = require('../email');
-const StudentModel = require('../models/StudentModel');
-const { reset } = require('nodemon');
-// Student can submit his answers
 const sendAnswers = async (req, res) => {
   const studentAnswers = req.body.answers;
   try {
@@ -51,35 +50,23 @@ const getExamByCode = (req, res) => {
       res.status(404).json({ msg: 'No exam with that code was found' });
     } else {
       if (exam.startDate <= Date.now() && exam.endDate > Date.now()) {
-        const student = new Student({
-          name: req.body.name,
-          email: req.body.email,
-          exam: exam._id,
-          score: null,
-          startedAt: null,
-        });
-        student
-          .save()
+        console.log(req.body.userId);
+        Student.findByIdAndUpdate(req.body.userId, {
+          $push: {
+            exams: {
+              exam: exam.id,
+              score: null,
+              startedAt: null,
+              answers: [],
+            },
+          },
+        })
           .then((result) => {
-            console.log(exam);
-            let token = jwt.sign(
-              { studentId: result._id, examId: exam.id },
-              process.env.SECRET,
-              {
-                expiresIn: 86400, // expires in 24 hours
-              }
-            );
-            res.status(200).json({
-              token,
-            });
-            sendMail(student.email, 'enrolledInExam', {
-              studentName: student.name,
-              examName: exam.name,
-            });
+            res.status(200).json({ examId: exam.id });
           })
           .catch((err) => {
             console.log(err);
-            res.status(400).json({ msg: 'you already enrolled for this exam' });
+            res.status(401).send({ msg: 'already enrolled' });
           });
       } else if (exam.startDate > Date.now()) {
         res.status(401).json({ msg: "Exam hasn't started yet" });
@@ -93,14 +80,13 @@ const getExamByCode = (req, res) => {
 const authenticate = async (req, res, next) => {
   if (req.headers['x-access-token']) {
     try {
-      let decoded = await jwt.verify(
+      let decoded = jwt.verify(
         req.headers['x-access-token'],
         process.env.SECRET
       );
-      let student = StudentModel.find({ _id: decoded.studentId });
+      let student = Student.find({ _id: decoded.id });
       if (student) {
-        req.body.userId = decoded.studentId;
-        req.body.examId = decoded.examId;
+        req.body.userId = decoded.id;
         next();
       } else {
         return res.status(401).send('Not authorized.');
@@ -116,44 +102,104 @@ const authenticate = async (req, res, next) => {
   }
 };
 
-const studentStartExam = (req, res) => {
-  Student.findOne({ exam: req.body.examId, _id: req.body.userId }).exec(
-    (err, student) => {
-      if (student && student.startedAt === null) {
-        Exam.findOne({ _id: req.body.examId }).exec((err, exam) => {
-          let startTime = new Date();
-          student.startedAt =startTime
-          student.mustSubmitBefore =new Date(startTime.getTime() + 60000*exam.duration+10000);
-          student.save();
-          const startedExam = new Date()
-            .toISOString()
-            .replace(/T/, ' ')
-            .replace(/\..+/, '');
-          sendMail(student.email, 'startedExam', {
-            studentName: student.name,
-            examName: exam.name,
-            startedExam,
-            duration: exam.durationInMins,
-          });
-          res.status(201).json({ msg: `exam started at ${startedExam}`,exam:exam });
-        });
-      } else {
-        res.status(404).json({ msg: 'something went wrong' });
-      }
-    }
-  );
+const getExamRules = async (req, res) => {
+  const exam = await Exam.findById(req.params.id);
+  if (!exam) return res.status(404).send({ msg: 'invalid auth' });
+  res.send({
+    rules: exam.rules,
+    name: exam.name,
+    duration: exam.duration,
+    endDate: exam.endDate,
+  });
+};
+
+const studentStartExam = async (req, res) => {
+  const studentExam = await StudentExams.findOne({
+    studentId: req.body.userId,
+    'exams.exam': req.params.id,
+  });
+
+  res.send(student);
+
+  // const startedExam = new Date()
+  //   .toISOString()
+  //   .replace(/T/, ' ')
+  //   .replace(/\..+/, '');
+  // sendMail(student.email, 'startedExam', {
+  //   studentName: student.name,
+  //   examName: exam.name,
+  //   startedExam,
+  //   duration: exam.durationInMins,
+  // });
 };
 
 const getExamData = async (req, res) => {
-  let exam = await Exam.findById(req.body.examId);
-  const student = await Student.findById(req.body.userId);
+  const exam = await Exam.findById(req.params.id);
+  if (!exam) return res.status(404).send({ msg: 'invalid auth' });
+  res.send(exam);
+};
 
-  if (!exam || !student) return res.status(404).send({ msg: 'invalid auth' });
-  if (student.startedAt===null) {
-    console.log("here",student.startedAt);
-    exam = {"rules":exam.rules,"duration":exam.duration,"endDate":exam.endDate}
+const register = async (req, res) => {
+  const {
+    firstName,
+    lastName,
+    email,
+    school,
+    password,
+    confirmPassword,
+  } = req.body;
+
+  if (
+    !firstName ||
+    !lastName ||
+    !email ||
+    !school ||
+    !password ||
+    !confirmPassword
+  )
+    return res.status(401).send({ msg: 'please fill all fields' });
+  else if (password !== confirmPassword)
+    return res.status(401).send({ msg: 'password does not match' });
+
+  const student = await Student.findOne({ email });
+
+  if (student) return res.status(401).send({ msg: 'email already exist' });
+
+  const hashedPassword = bcrypt.hashSync(req.body.password, 8);
+  try {
+    const student = await Student.create({
+      firstName,
+      lastName,
+      email,
+      school,
+      password: hashedPassword,
+    });
+    res.status(200).send(student);
+  } catch (err) {
+    res.status(500).send(err);
   }
-  res.send({ exam, student });
+};
+
+const login = async (req, res) => {
+  try {
+    const student = await Student.findOne({ email: req.body.email });
+    if (student) {
+      const match = await bcrypt.compare(req.body.password, student.password);
+      if (match) {
+        let token = jwt.sign({ id: student._id }, process.env.SECRET, {
+          expiresIn: 86400, // expires in 24 hours
+        });
+        res.status(200).send({ auth: true, token: token, student });
+      } else {
+        res.status(404).send("Couldn't find the student.");
+      }
+    } else {
+      res.status(404).send("Couldn't find the student.");
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(404).send("Couldn't find the student.");
+  }
 };
 
 
@@ -172,5 +218,8 @@ module.exports = {
   studentStartExam,
   authenticate,
   getExamData,
-  getExamCorrectAnswers
+  getExamCorrectAnswers,
+  register,
+  login,
+  getExamRules,
 };

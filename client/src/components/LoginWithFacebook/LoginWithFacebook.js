@@ -32,7 +32,7 @@ function LoginWithFacebook(props){
             callback={responseFacebook}
             fields="name,email"
             render={renderProps => (
-                <button type="btton" onClick={renderProps.onClick} className="btn btn-block bg-info text-white">
+                <button type="button" onClick={renderProps.onClick} className="btn btn-block bg-info text-white">
                     Login with <FontAwesomeIcon icon={faFacebook}/> ?
                 </button>
             )}

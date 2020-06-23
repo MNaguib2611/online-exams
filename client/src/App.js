@@ -4,19 +4,10 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import Home from './pages/Home/Home';
-import { Exam } from './pages/Exam/Exam';
-import { ExamRules } from './pages/ExamRules/ExamRules';
-import { Score } from './pages/Score/Score';
 import { ExamContext } from './context/examContext';
-import RequireEnroll from './hocs/requireEnroll';
-import RequireNotEnroll from './hocs/requireNotEnroll';
-import RequireAuth from './hocs/requireAuth';
-import TeacherHome from './pages/TeacherHome/TeacherHome';
 import { TeacherContext } from './context/teacherContext';
-import TeacherHeader from './components/TeacherHeader/TeacherHeader';
-import TeacherNewExam from './pages/TeacherNewExam/TeacherNewExam';
-import TeacherEditExam from './pages/TeacherEditExam/TeacherEditExam';
-import TeacherExamStatus from "./pages/TeacherExamStatus/TeacherExamStatus.js";
+import TeacherWrapper from './pages/Teacher/Wrapper';
+import StudentWrapper from './pages/Student/Wrapper';
 
 function App() {
   const [exam, setExam] = useState({});
@@ -25,37 +16,24 @@ function App() {
   return (
     <div className='App'>
       <BrowserRouter>
-      <ToastProvider autoDismissTimeout={2000}>
-        <ExamContext.Provider value={{ exam, setExam }}>
-          <Switch>
-            <RequireNotEnroll exact path='/' component={Home} />
-            <RequireEnroll exact path='/exam' component={Exam} />
-            <RequireEnroll exact path='/rules' component={ExamRules} />
-            <RequireEnroll exact path='/score' component={Score} />
+        <ToastProvider autoDismissTimeout={2000}>
+          <ExamContext.Provider value={{ exam, setExam }}>
+            <Switch>
+              <Route exact path='/'>
+                <Home />
+              </Route>
 
-            <TeacherContext.Provider value={{ teacher, setTeacher }}>
-              <RequireAuth component={TeacherHeader} />
-                <RequireAuth exact path='/teacher' component={TeacherHome} />
-                <RequireAuth
-                  exact
-                  path='/teacher/new'
-                  component={TeacherNewExam}
-                />
+              <Route path='/student'>
+                <StudentWrapper />
+              </Route>
 
-                <RequireAuth 
-                  exact 
-                  path="/exam/:id/:examName" 
-                  component={TeacherExamStatus}
-                />
-
-                <RequireAuth
-                  exact
-                  path='/teacher/:id/edit'
-                  component={TeacherEditExam}
-                />
-            </TeacherContext.Provider>
-          </Switch>
-        </ExamContext.Provider>
+              <Route path='/teacher'>
+                <TeacherContext.Provider value={{ teacher, setTeacher }}>
+                  <TeacherWrapper />
+                </TeacherContext.Provider>
+              </Route>
+            </Switch>
+          </ExamContext.Provider>
         </ToastProvider>
       </BrowserRouter>
     </div>
