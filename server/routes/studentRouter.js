@@ -9,6 +9,7 @@ const {
   register,
   login,
   getExamRules,
+  myEnrolledExams
 } = require('../controllers/StudentController');
 
 const router = new Router();
@@ -25,6 +26,10 @@ router.post('/enroll', authenticate, getExamByCode);
 router.patch('/startExam/:id', authenticate, studentStartExam);
 
 router.get('/getExamCorrectAnswers/:id', getExamCorrectAnswers);
+
+router.get('/myEnrolledExams', authenticate, myEnrolledExams);
+
+
 
 
 

@@ -243,6 +243,27 @@ const getExamCorrectAnswers = async (req, res) => {
   res.send({ examAnswers });
 };
 
+
+
+
+
+
+
+const myEnrolledExams = async (req, res) => {
+  try {
+    console.log(req.body);
+    const student = await Student.findById(req.body.userId);
+    const myExams=student.exams
+    res.send({ myExams });
+  } catch (error) {
+    res.status(500).send({ msg: error.message });
+  }
+};
+
+
+
+
+
 module.exports = {
   sendAnswers,
   getExamByCode,
@@ -253,4 +274,5 @@ module.exports = {
   register,
   login,
   getExamRules,
+  myEnrolledExams,
 };
