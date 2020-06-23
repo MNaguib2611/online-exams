@@ -21,7 +21,7 @@ const AnswersTable = (props) => {
                 </tr>
               </thead>
               <tbody>
-                {props.examQuestions.map((question, index) => (
+                {/* {props.examQuestions.map((question, index) => (
                   <tr key={index + question.questionStatement}>
                     <td key='questionStatement'>
                       {question.questionStatement}
@@ -31,7 +31,7 @@ const AnswersTable = (props) => {
                       {examModelAnsers[question._id]}
                     </td>
                   </tr>
-                ))}
+                ))} */}
               </tbody>
             </table>
           </div>
