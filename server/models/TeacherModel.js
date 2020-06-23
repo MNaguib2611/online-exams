@@ -23,6 +23,7 @@ const TeacherSchema = mongoose.Schema(
       minlength: 8,
     },
     facebookID: { type: Number },
+    googleID: {type: Number}
   },
   { timestamps: true }
 );

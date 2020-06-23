@@ -4,6 +4,7 @@ import axios from '../../../axios';
 import { useHistory } from 'react-router-dom';
 
 import LoginWithFacebook from '../../LoginWithFacebook/LoginWithFacebook.js';
+import LoginWithGoogle from '../../LoginWithGoogle/LoginWithGoogle.js';
 
 export const TeacherLogin = (props) => {
   const [email, setEmail] = useState('');
@@ -93,10 +94,9 @@ export const TeacherLogin = (props) => {
           </button>
         </form>
         <hr/>
-
         <LoginWithFacebook methods={methods} history={history}/>
-
-        <LoginWithFacebook methods={methods} />
+        <hr />
+        <LoginWithGoogle methods={methods} history={history} />
       </div>
     </div>
   );
