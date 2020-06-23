@@ -1,21 +1,28 @@
 import React, { useState } from 'react';
 import axios from '../../../axios';
+import { useHistory } from 'react-router-dom';
 
 const Enroll = () => {
   const [examKey, setExamKey] = useState('');
   const [error, setError] = useState('');
-
+  const history = useHistory();
   const handleExamKey = (e) => {
     setExamKey(e.target.value);
   };
 
   const fetchExam = () => {
     axios
-      .post('/students/enroll', { key: examKey })
+      .post(
+        '/students/enroll',
+        { key: examKey },
+        {
+          headers: {
+            'x-access-token': localStorage.getItem('studentToken'),
+          },
+        }
+      )
       .then((exam) => {
-        console.log(exam.data);
-        // setExam(exam.data.exam);
-        // history.push('/rules');
+        history.push(`/student/exams/${exam.data.examId}/rules`);
       })
       .catch((err) => {
         setError(err.response.data.msg);

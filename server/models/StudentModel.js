@@ -34,6 +34,19 @@ const StudentSchema = mongoose.Schema(
       minlength: 3,
       maxlength: 20,
     },
+    exams: [
+      {
+        exam: { type: 'ObjectId', ref: 'Exam' },
+        score: Number,
+        startedAt: Date,
+        answers: [
+          {
+            questionId: mongoose.SchemaTypes.ObjectId,
+            answer: mongoose.SchemaTypes.String,
+          },
+        ],
+      },
+    ],
   },
   { timestamps: true }
 );

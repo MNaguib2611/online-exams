@@ -1,34 +1,29 @@
 const mongoose = require('mongoose');
 
-const StudentSchema = mongoose.Schema(
+const StudentExamsSchema = mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-      minlength: 3,
-      maxlength: 20,
-    },
-    email: {
-      type: String,
-      match: [
-        /^([\w\.]*)(@)([\w\.]*)?(.com)$/,
-        'Please fill a valid email address',
-      ],
-      unique: true,
-      required: true,
+    studentId: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Student',
     },
     exams: [
       {
-        exam: { type: 'ObjectId', ref: 'Exam' },
+        exam: { type: 'ObjectId', ref: 'Exam', unique: true },
         score: Number,
         startedAt: Date,
+        answers: [
+          {
+            questionId: mongoose.SchemaTypes.ObjectId,
+            answer: mongoose.SchemaTypes.String,
+          },
+        ],
       },
     ],
   },
   { timestamps: true }
 );
 
-StudentSchema.index({ email: 1, exam: 1 }, { unique: true });
-const StudentModel = mongoose.model('StudentExams', StudentSchema);
+// StudentSchema.index({ email: 1, exam: 1 }, { unique: true });
+const StudentExamsModel = mongoose.model('StudentExams', StudentExamsSchema);
 
-module.exports = StudentModel;
+module.exports = StudentExamsModel;
