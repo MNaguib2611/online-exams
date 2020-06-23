@@ -67,8 +67,8 @@ const TeacherTrueFalseQuestion = (props) => {
         clearInputs();
         if (singleMode) {
           props.handleTrueORFalseForm();
-          props.fetchExam();
         }
+        props.fetchExam();
       })
       .catch((err) => {
         console.log(err.response.data);

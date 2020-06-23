@@ -96,8 +96,8 @@ const TeacherQuestion = (props) => {
         clearInputs();
         if (singleMode) {
           props.handleShowForm();
-          props.fetchExam();
         }
+        props.fetchExam();
       })
       .catch((err) => {
         console.log(err.response.data);

@@ -7,6 +7,8 @@ const Question = ({ question, handleNewAnswer, answer, visibleQuestion }) => {
     handleNewAnswer(question._id, e.target.value);
   };
 
+  
+
   return (
     <div className={visibleQuestion ? '' : 'hidden'}>
       <h2 className='text-center'>{question.questionStatement}</h2>

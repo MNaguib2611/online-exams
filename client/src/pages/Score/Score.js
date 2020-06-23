@@ -30,7 +30,7 @@ export const Score = () => {
                 <div className='d-flex'>
                   <strong className='mr-4'>Score:</strong>
                   <p className='mr-4'>
-                  {context.exam.student.score} 
+                  {context.exam.student.percentage} %
                   </p>
                 </div>
                   <p className='mr-4'>

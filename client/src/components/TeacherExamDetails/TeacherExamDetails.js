@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import DatePicker from 'react-datepicker';
 import DateTimePicker from 'react-datetime-picker';
 import 'react-datepicker/dist/react-datepicker.css';
 import axios from '../../axios';
@@ -24,6 +23,7 @@ const TeacherExamDetails = ({ exam }) => {
     setEndDate(new Date(exam.endDate));
     setRules(exam.rules);
     setDuration(exam.duration);
+    setSuccessPercent(exam.successPercent)
   }, []);
   const handleStartDate = (date) => {
     setStartDate(date);

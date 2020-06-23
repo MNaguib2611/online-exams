@@ -50,6 +50,10 @@ export const ExamRules = (props) => {
                     <p className='mr-4'>{exam.exam.duration} minutes</p>
                   </div>
                   <div className='d-flex'>
+                    <strong className='mr-4'>Exam Passage Percentage:</strong>
+                    <p className='mr-4'>{exam.exam.successPercent} %</p>
+                  </div>
+                  <div className='d-flex'>
                     <strong className='mr-4'>Exam End Date:</strong>
                     <p className='mr-4'>
                       {new Date(exam.exam.endDate).toDateString()}
