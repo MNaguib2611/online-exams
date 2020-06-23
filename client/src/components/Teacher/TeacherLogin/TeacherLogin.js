@@ -23,29 +23,26 @@ export const TeacherLogin = (props) => {
     setPassword(e.target.value);
   };
   const handleSubmit = () => {
-    setLoginMethod("normal");
+    setLoginMethod('normal');
     if (!email || !password) {
       setError('please fill all fields');
     } else {
-      
       axios
-      .post('teacher/login', { email, password, loginMethod })
-      .then((result) => {
-        localStorage.setItem('teacherToken', result.data.token);
-        history.push('/teacher');
-      })
-      .catch((err) => {
-        console.log(err);
-        setError('invalid credentials');
-      });
-
+        .post('teacher/login', { email, password, loginMethod })
+        .then((result) => {
+          localStorage.setItem('teacherToken', result.data.token);
+          history.push('/teacher');
+        })
+        .catch((err) => {
+          console.log(err);
+          setError('invalid credentials');
+        });
     }
-
   };
 
   const methods = {
     setError,
-  }
+  };
 
   return (
     <div id='teacher-form'>
@@ -92,11 +89,9 @@ export const TeacherLogin = (props) => {
             SING IN
           </button>
         </form>
-        <hr/>
+        <hr />
 
-        <LoginWithFacebook methods={methods} history={history}/>
-
-        <LoginWithFacebook methods={methods} />
+        <LoginWithFacebook methods={methods} history={history} />
       </div>
     </div>
   );
