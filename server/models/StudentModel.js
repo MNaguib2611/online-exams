@@ -37,6 +37,7 @@ const StudentSchema = mongoose.Schema(
     exams: [
       {
         examId: { type: 'ObjectId', ref: 'Exam' },
+        name: String,
         score: Number,
         startedAt: Date,
         percentage: Number,

@@ -183,10 +183,7 @@ const getExamData = async (req, res) => {
 const getExamScore = async (req, res) => {
   const student = await Student.findById(req.body.userId);
   const exam = await Exam.findById(req.params.id);
-  const rightAnswers = exam.questions.map((question) => ({
-    id: question._id,
-    answer: question.correctAnswer,
-  }));
+
   const studentExam = student.exams.find(
     (exam) => String(exam.examId) === String(req.params.id)
   );
@@ -195,11 +192,26 @@ const getExamScore = async (req, res) => {
     return res.status(404).send({ msg: 'no exam found!' });
   }
 
+  const answers = exam.questions.map((question) => ({
+    id: question._id,
+    questionStatement: question.questionStatement,
+    correctAnswer: question.correctAnswer,
+    studentAnswer: studentExam.answers.find(
+      (answer) => String(answer._id) === String(question._id)
+    ).answer,
+  }));
+  
+
   res.send({
-    studentExam,
-    rightAnswers,
-    examName: exam.name,
-    showAnswers: exam.showAnswers,
+    examData: {
+      name: exam.name,
+      score: studentExam.score,
+      startedAt: studentExam.startedAt,
+      percentage: studentExam.percentage,
+      passed: studentExam.passed,
+      showAnswers: exam.showAnswers,
+    },
+    answers,
   });
 };
 

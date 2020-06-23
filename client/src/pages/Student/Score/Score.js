@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-// import AnswersTable from '../../components/AnswersTable/AnswersTable';
+import AnswersTable from '../../../components/AnswersTable/AnswersTable';
 import { useParams } from 'react-router-dom';
 import axios from '../../../axios';
 import Spinner from '../../../components/Loading/Loading';
@@ -34,7 +34,7 @@ export const Score = () => {
                 <div className='heading'>
                   <h3 className='text-capitalize'>
                     {' '}
-                    {exam.examName} Exam Score
+                    {exam.examData.name} Exam Score
                   </h3>
                 </div>
                 <div className='body'>
@@ -42,23 +42,23 @@ export const Score = () => {
                     <div className='d-flex'>
                       <strong className='mr-4'>Started at:</strong>
                       <p className='mr-4'>
-                        {new Date(exam.studentExam.startedAt).toLocaleString()}
+                        {new Date(exam.examData.startedAt).toLocaleString()}
                       </p>
                     </div>
                     <div className='d-flex ml-5'>
                       <strong className='mr-4'>Score:</strong>
-                      <p className='mr-4'>{exam.studentExam.score}</p>
+                      <p className='mr-4'>{exam.examData.score}</p>
                     </div>
                   </div>
                   <div className='d-flex'>
                     <div className='d-flex'>
                       <strong className='mr-4'>Percentage:</strong>
-                      <p className='mr-4'>{exam.studentExam.percentage} %</p>
+                      <p className='mr-4'>{exam.examData.percentage} %</p>
                     </div>
                     <div className='d-flex ml-5'>
                       <strong className='mr-4'>Result:</strong>
                       <p className='mr-4'>
-                        {(exam.studentExam.passed && (
+                        {(exam.examData.passed && (
                           <strong className='text-success'>Passed</strong>
                         )) || <strong className='text-danger'>Failed</strong>}
                       </p>
@@ -68,12 +68,9 @@ export const Score = () => {
               </div>
             </div>
             <div className='col-md-10 offset-1'>
-              {/* {context.exam.exam.showAnswers && (
-              <AnswersTable
-                examID={context.exam.exam._id}
-                examQuestions={context.exam.exam.questions}
-              />
-            )} */}
+              {exam.examData.showAnswers && (
+                <AnswersTable examQuestions={exam.questions} />
+              )}
             </div>
           </div>
         </div>
