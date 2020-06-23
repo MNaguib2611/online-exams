@@ -1,12 +1,12 @@
 import React, { useContext } from 'react';
-import { ExamContext } from '../../../context/examContext';
+import AnswersTable  from '../../components/AnswersTable/AnswersTable';
+import { ExamContext } from '../../context/examContext';
 import { useHistory } from 'react-router-dom';
 export const Score = () => {
   const context = useContext(ExamContext);
   const history = useHistory();
-  console.log("adssdsa",context.exam.exam);
   return (
-    <section id='new-exam'>
+    <section id='new-exam '>
       <div className='container'>
         <div className='row'>
           <div className='col-md-8 offset-2'>
@@ -30,6 +30,7 @@ export const Score = () => {
                 <div className='d-flex'>
                   <strong className='mr-4'>Score:</strong>
                   <p className='mr-4'>
+                  {context.exam.student.score} 
                   {context.exam.student.percentage} %
                   </p>
                 </div>
@@ -48,8 +49,13 @@ export const Score = () => {
                   Logout
                 </button>
               </div>
+
             </div>
           </div>
+          <div className='col-md-10 offset-1'>
+              { context.exam.exam.showAnswers &&
+                    <AnswersTable examID={context.exam.exam._id} examQuestions={context.exam.exam.questions}/>}
+          </div>          
         </div>
       </div>
     </section>

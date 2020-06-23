@@ -14,6 +14,8 @@ const NewExamForm = () => {
   const [rules, setRules] = useState('');
   const [duration, setDuration] = useState();
   const [successPercent, setSuccessPercent] = useState();
+  const [showAnswers, setShowAnswers] = useState(false);
+
   const handleStartDate = (date) => {
     setStartDate(date);
   };
@@ -36,6 +38,12 @@ const NewExamForm = () => {
   const handleSuccessPercent = (e) => {
     setSuccessPercent(e.target.value);
   };
+
+  const handleShowAnswers = () => {
+   setShowAnswers(!showAnswers);
+  };
+
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -66,6 +74,7 @@ const NewExamForm = () => {
         setError(err.response.data);
       });
   };
+
 
   return (
     <section id='new-exam'>
@@ -127,6 +136,16 @@ const NewExamForm = () => {
                   <div className='form-group'>
                     <label className='mr-3'>End Date:</label>
                     <DateTimePicker onChange={handleEndDate} value={endDate} />
+                  </div>
+                  <div className='form-group' title="students can see the correct answers after they finish the exam">
+                    <label className='mr-3'>Show Answers</label>
+                  <input
+                  type="checkbox"
+                  checked={showAnswers}
+                  onChange={handleShowAnswers}
+                  >
+
+                  </input>
                   </div>
                   {error && <p className='text-danger'>{error}</p>}
                   <button className='btn  btn-primary btn-blue' type='submit'>

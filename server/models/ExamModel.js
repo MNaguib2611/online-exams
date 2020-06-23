@@ -40,6 +40,8 @@ const ExamSchema = mongoose.Schema(
     ],
     durationInMins: Number,
     successPercent: Number,
+    showAnswers:Boolean
+
   },
   { timestamps: true }
 );

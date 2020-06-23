@@ -5,7 +5,7 @@ import StudentHome from './StudentHome/StudentHome';
 import { Switch, Route } from 'react-router-dom';
 import Enroll from './Enroll/Enroll';
 import { ExamRules } from './ExamRules/ExamRules';
-
+import { Exam } from './Exam/Exam';
 const Wrapper = () => {
   return (
     <>
@@ -19,6 +19,9 @@ const Wrapper = () => {
         </Route>
         <Route exact path='/student/exams/:id/rules'>
           <ExamRules />
+        </Route>
+        <Route exact path='/student/exams/:id/started'>
+          <Exam />
         </Route>
       </Switch>
     </>

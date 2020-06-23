@@ -3,22 +3,32 @@ var bcrypt = require('bcrypt');
 
 const Exam = require('../models/ExamModel');
 const Student = require('../models/StudentModel');
-const StudentExams = require('../models/StudentExamsModel');
 const sendMail = require('../email');
+
 const sendAnswers = async (req, res) => {
   const studentAnswers = req.body.answers;
   try {
-    const exam = await Exam.findById(req.body.examId);
+    const exam = await Exam.findById(req.params.id);
 
     const student = await Student.findById(req.body.userId);
-    if (!student) return res.status(404).send();
 
-    if (student.score !== null) {
-      return res.status(401).send({ msg: 'you did this exam before' });
-    }
-    if (student.mustSubmitBefore < Date.now()) {
-      return res.status(401).send({ msg: 'you have exceeded the time limit' });
-    }
+    const studentExam = student.exams.find(
+      (exam) => String(exam.examId) === String(req.params.id)
+    );
+
+    if (!studentExam)
+      return res.status(403).send({ msg: 'you are not enrolled to this exam' });
+
+    if (studentExam.score)
+      return res.status(403).send({ msg: 'you did this exam before ' });
+
+    const examDuration = exam.duration;
+    const isExpired =
+      new Date(studentExam.startedAt.getTime() + examDuration * 60 * 1000) -
+      new Date();
+    if (isExpired <= 0)
+      return res.status(403).send({ msg: 'exam duration expired' });
+
     let score = 0;
 
     studentAnswers.forEach((studentAnswer) => {
@@ -28,18 +38,21 @@ const sendAnswers = async (req, res) => {
       if (isRightAnswer.length) score++;
     });
 
-    student.score = score;
-    student.percentage = (100*score)/exam.questions.length
-    student.submittedAt=Date.now();
+    studentExam.score = score;
+    studentExam.percentage = (100 * score) / exam.questions.length;
     await student.save();
+    const passed = studentExam.percentage >= exam.successPercent ? true : false;
+
     sendMail(student.email, 'studentScore', {
       studentName: student.name,
       examName: exam.name,
       score: score,
     });
-    res.status(200).send({ score,percentage });
+    res.status(200).send({ score, percentage: studentExam.percentage, passed });
   } catch (error) {
-    res.send(error);
+    console.log(error);
+
+    res.status(403).send(error);
   }
 };
 
@@ -53,7 +66,7 @@ const getExamByCode = (req, res) => {
         Student.findByIdAndUpdate(req.body.userId, {
           $push: {
             exams: {
-              exam: exam.id,
+              examId: exam.id,
               score: null,
               startedAt: null,
               answers: [],
@@ -97,7 +110,7 @@ const authenticate = async (req, res, next) => {
         .send({ auth: false, message: 'Failed to authenticate token.' });
     }
   } else {
-    return res.status(403).send({ auth: false, message: 'No token provided.' });
+    return res.status(401).send({ auth: false, message: 'No token provided.' });
   }
 };
 
@@ -113,12 +126,32 @@ const getExamRules = async (req, res) => {
 };
 
 const studentStartExam = async (req, res) => {
-  const studentExam = await StudentExams.findOne({
-    studentId: req.body.userId,
-    'exams.exam': req.params.id,
-  });
+  const student = await Student.findById(req.body.userId);
+  console.log(student.exams);
+  const isEnrolled = student.exams.find(
+    (exam) => String(exam.examId) === String(req.params.id)
+  );
+  if (!isEnrolled)
+    return res.status(403).send({ msg: 'you are not enrolled to this exam' });
 
-  res.send(student);
+  if (isEnrolled.score)
+    return res.status(403).send({ msg: 'you did this exam before ' });
+
+  const exam = await Exam.findById(req.params.id);
+
+  if (isEnrolled.startedAt) {
+    const examDuration = exam.duration;
+    const isExpired =
+      new Date(isEnrolled.startedAt.getTime() + examDuration * 60 * 1000) -
+      new Date();
+    if (isExpired <= 0)
+      return res.status(401).send({ msg: 'exam duration expired' });
+  }
+  isEnrolled.startedAt = Date.now();
+  await student.save();
+
+  res.send(exam);
+  // res.send(student);
 
   // const startedExam = new Date()
   //   .toISOString()
@@ -156,13 +189,13 @@ const register = async (req, res) => {
     !password ||
     !confirmPassword
   )
-    return res.status(401).send({ msg: 'please fill all fields' });
+    return res.status(403).send({ msg: 'please fill all fields' });
   else if (password !== confirmPassword)
-    return res.status(401).send({ msg: 'password does not match' });
+    return res.status(403).send({ msg: 'password does not match' });
 
   const student = await Student.findOne({ email });
 
-  if (student) return res.status(401).send({ msg: 'email already exist' });
+  if (student) return res.status(403).send({ msg: 'email already exist' });
 
   const hashedPassword = bcrypt.hashSync(req.body.password, 8);
   try {
@@ -201,12 +234,22 @@ const login = async (req, res) => {
   }
 };
 
+const getExamCorrectAnswers = async (req, res) => {
+  const exam = await Exam.findById(req.params.id);
+  let examAnswers = {};
+  exam.questions.map((question) => {
+    examAnswers[question._id] = question.correctAnswer;
+  });
+  res.send({ examAnswers });
+};
+
 module.exports = {
   sendAnswers,
   getExamByCode,
   studentStartExam,
   authenticate,
   getExamData,
+  getExamCorrectAnswers,
   register,
   login,
   getExamRules,

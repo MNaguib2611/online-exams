@@ -26,26 +26,6 @@ export const ExamRules = (props) => {
     getRules();
   }, []);
 
-  const startExam = () => {
-    axios
-      .patch(
-        '/students/startExam',
-        {},
-        {
-          headers: {
-            'x-access-token': localStorage.getItem('studentToken'),
-          },
-        }
-      )
-      .then((result) => {
-        props.getData();
-        history.push('/exam');
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   return (
     (exam.rules && (
       <section id='new-exam'>
@@ -76,7 +56,12 @@ export const ExamRules = (props) => {
                     <p className='mr-4'>{exam.rules}</p>
                   </div>
 
-                  <button className='btn btn-blue' onClick={startExam}>
+                  <button
+                    className='btn btn-blue'
+                    onClick={() => {
+                      history.push('/student/exams/' + id + '/started');
+                    }}
+                  >
                     Start Now
                   </button>
                 </div>
