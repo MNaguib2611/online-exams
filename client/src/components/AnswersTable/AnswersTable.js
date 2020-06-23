@@ -1,36 +1,9 @@
-import React ,{useState,useEffect} from 'react';
-import axios from '../../axios';
+import React from 'react';
 
-// import axios from '../../axios';
 const AnswersTable = (props) => {
-    const [examModelAnsers,setExamModelAnsers]=useState({});
-    
-      useEffect(() => {
-        const fetchExamAnswers = () => {
-            axios
-              .get(
-                `/students/getExamCorrectAnswers/${props.examID}`,
-                {},
-                {
-                    headers: {
-                      'x-access-token': localStorage.getItem(
-                        'studentToken'
-                      ),
-                    },
-                }
-              )
-              .then((answers) => {
-                  console.log(answers.data);
-                  setExamModelAnsers(answers.data.examAnswers)
-              })
-              .catch((err) => {
-                console.log(err);
-              });
-          };
-        fetchExamAnswers()
-      },[])
+  console.log(props);
   return (
-    <section id='exam-list' >
+    <section id='exam-list'>
       <div className='container '>
         <div className='row'>
           <div className='col-md-12'>
@@ -48,16 +21,17 @@ const AnswersTable = (props) => {
                 </tr>
               </thead>
               <tbody>
-              {
-                props.examQuestions.map((question,index)=>(
-                    <tr key={index+question.questionStatement} >
-                        <td key="questionStatement">{question.questionStatement}</td>
-                        <td key="YourAnswer">Your Answer</td>
-                        <td key="Correct Answer">{examModelAnsers[question._id]}</td>
-                    </tr>
-                ))
-              }
-                
+                {/* {props.examQuestions.map((question, index) => (
+                  <tr key={index + question.questionStatement}>
+                    <td key='questionStatement'>
+                      {question.questionStatement}
+                    </td>
+                    <td key='YourAnswer'>Your Answer</td>
+                    <td key='Correct Answer'>
+                      {examModelAnsers[question._id]}
+                    </td>
+                  </tr>
+                ))} */}
               </tbody>
             </table>
           </div>

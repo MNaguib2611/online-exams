@@ -44,21 +44,21 @@ const ExamList = () => {
                   <th>Exam Name</th>
                   <th>Enrolled In</th>
                   <th>Score</th>
-                  <th>Status</th>
+                  <th>Passed</th>
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody>
               {
                 examList.map((exam) =>(
-                  <tr>
+                  <tr key={exam._id}>
                   <td>{exam.name}</td>
                   <td>{exam.startedAt}</td>
-                  <td>{exam.percentage}</td>
-                  <td>{exam.status}</td>
+                  <td>{exam.percentage.toFixed(2)}%</td>
+                  <td>{exam.passed?"True":"False"}</td>
                   <td>
                   <Link
-                        to={`/exams/${exam._id}/score`}
+                        to={`student/exams/${exam._id}/score`}
                         className='action'
                       >
                         <i className='fas fa-eye'></i>

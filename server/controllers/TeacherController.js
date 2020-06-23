@@ -33,6 +33,8 @@ TeacherController.login = async (req, res) => {
   try {
     if (req.body.loginMethod === 'facebook') {
       await TeacherController.loginWithFaceBook(req, res);
+    } else if(req.body.loginMethod == 'google'){
+      await TeacherController.loginWithGoogle(req, res);
     } else {
       const Teacher = await TeacherModel.findOne({ email: req.body.email });
       if (Teacher.facebookID) {
@@ -40,13 +42,15 @@ TeacherController.login = async (req, res) => {
         res
           .status(409)
           .send('You seem to have logged with your facebook acount.');
-      } else if (Teacher) {
+      } else if(Teacher.googleID){
+        console.log('Teacher Did not create a password, logged with facebook');
+        res
+          .status(409)
+          .send('You seem to have logged with your facebook acount.');
+      }else if (Teacher) {
         const match = await bcrypt.compare(req.body.password, Teacher.password);
         if (match) {
-          let token = jwt.sign({ id: Teacher._id }, process.env.SECRET, {
-            expiresIn: 86400, // expires in 24 hours
-          });
-          res.status(200).send({ auth: true, token: token });
+          await TeacherController.generateToken(Teacher, res);
         } else {
           res.status(404).send("Couldn't find the Teacher.");
         }
@@ -103,14 +107,8 @@ TeacherController.loginWithFaceBook = async (req, res) => {
     email: req.body.email,
     facebookID: req.body.facebookID,
   });
-  console.log(Teacher);
-
   if (Teacher) {
-    let token = jwt.sign({ id: Teacher._id }, process.env.SECRET, {
-      expiresIn: 86400, // expires in 24 hours
-    });
-    console.log('Teacher Login ', Teacher);
-    res.status(200).send({ auth: true, token: token });
+    await TeacherController.generateToken(Teacher, res);
   } else {
     Teacher = new TeacherModel();
     console.log('Teacher Register ', Teacher);
@@ -118,10 +116,32 @@ TeacherController.loginWithFaceBook = async (req, res) => {
     Teacher.email = req.body.email;
     Teacher.facebookID = req.body.facebookID;
     Teacher.save();
-    let token = jwt.sign({ id: Teacher._id }, process.env.SECRET, {
-      expiresIn: 86400, // expires in 24 hours
-    });
-    res.status(200).send({ auth: true, token: token });
+    await TeacherController.generateToken(Teacher, res);
   }
 };
+
+TeacherController.loginWithGoogle = async (req, res ) => {
+  let Teacher = await TeacherModel.findOne({
+    email: req.body.email,
+    googleID: req.body.googleID,
+  });
+  if (Teacher) {
+    await TeacherController.generateToken(Teacher, res);
+  } else {
+    Teacher = new TeacherModel();
+    console.log('Teacher Register ', Teacher);
+    Teacher.name = req.body.name;
+    Teacher.email = req.body.email;
+    Teacher.googleID = req.body.googleID;
+    Teacher.save();
+    await TeacherController.generateToken(Teacher, res);
+  }
+};
+
+TeacherController.generateToken = async (teacher, response) => {
+  let token = jwt.sign({ id: teacher._id }, process.env.SECRET, {
+    expiresIn: 86400, // expires in 24 hours
+  });
+  response.status(200).send({ auth: true, token: token });
+}
 module.exports = TeacherController;

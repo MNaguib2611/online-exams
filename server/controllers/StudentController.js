@@ -40,15 +40,17 @@ const sendAnswers = async (req, res) => {
 
     studentExam.score = score;
     studentExam.percentage = (100 * score) / exam.questions.length;
+    studentExam.answers = studentAnswers;
+    studentExam.passed =
+      studentExam.percentage >= exam.successPercent ? true : false;
     await student.save();
-    const passed = studentExam.percentage >= exam.successPercent ? true : false;
 
     sendMail(student.email, 'studentScore', {
       studentName: student.name,
       examName: exam.name,
       score: score,
     });
-    res.status(200).send({ score, percentage: studentExam.percentage, passed });
+    res.status(200).send();
   } catch (error) {
     console.log(error);
 
@@ -57,34 +59,42 @@ const sendAnswers = async (req, res) => {
 };
 
 const getExamByCode = (req, res) => {
-  Exam.findOne({ key: req.body.key }).exec((err, exam) => {
+  Exam.findOne({ key: req.body.key }).exec(async (err, exam) => {
     if (!exam) {
-      res.status(404).json({ msg: 'No exam with that code was found' });
-    } else {
-      if (exam.startDate <= Date.now() && exam.endDate > Date.now()) {
-        console.log(req.body.userId);
-        Student.findByIdAndUpdate(req.body.userId, {
-          $push: {
-            exams: {
-              examId: exam.id,
-              score: null,
-              startedAt: null,
-              answers: [],
-            },
+      return res.status(404).json({ msg: 'No exam with that code was found' });
+    }
+
+    if (exam.startDate <= Date.now() && exam.endDate > Date.now()) {
+      const student = await Student.findById(req.body.userId);
+      const isEnrolled = student.exams.find(
+        (examItem) => String(examItem.examId) === String(exam._id)
+      );
+
+      console.log(isEnrolled);
+
+      if (isEnrolled) return res.status(401).send({ msg: 'already enrolled' });
+
+      Student.findByIdAndUpdate(req.body.userId, {
+        $push: {
+          exams: {
+            examId: exam.id,
+            name:exam.name,
+            score: null,
+            startedAt: null,
+            answers: [],
           },
+        },
+      })
+        .then((result) => {
+          res.status(200).json({ examId: exam.id });
         })
-          .then((result) => {
-            res.status(200).json({ examId: exam.id });
-          })
-          .catch((err) => {
-            console.log(err);
-            res.status(401).send({ msg: 'already enrolled' });
-          });
-      } else if (exam.startDate > Date.now()) {
-        res.status(401).json({ msg: "Exam hasn't started yet" });
-      } else {
-        res.status(401).json({ msg: 'Exam has already finished' });
-      }
+        .catch((err) => {
+          console.log(err);
+        });
+    } else if (exam.startDate > Date.now()) {
+      res.status(401).json({ msg: "Exam hasn't started yet" });
+    } else {
+      res.status(401).json({ msg: 'Exam has already finished' });
     }
   });
 };
@@ -127,30 +137,30 @@ const getExamRules = async (req, res) => {
 
 const studentStartExam = async (req, res) => {
   const student = await Student.findById(req.body.userId);
-  console.log(student.exams);
-  const isEnrolled = student.exams.find(
+  const studentExam = student.exams.find(
     (exam) => String(exam.examId) === String(req.params.id)
   );
-  if (!isEnrolled)
+  if (!studentExam)
     return res.status(403).send({ msg: 'you are not enrolled to this exam' });
 
-  if (isEnrolled.score)
+  if (studentExam.score)
     return res.status(403).send({ msg: 'you did this exam before ' });
 
   const exam = await Exam.findById(req.params.id);
 
-  if (isEnrolled.startedAt) {
+  if (studentExam.startedAt) {
     const examDuration = exam.duration;
     const isExpired =
-      new Date(isEnrolled.startedAt.getTime() + examDuration * 60 * 1000) -
+      new Date(studentExam.startedAt.getTime() + examDuration * 60 * 1000) -
       new Date();
     if (isExpired <= 0)
       return res.status(401).send({ msg: 'exam duration expired' });
+  } else {
+    studentExam.startedAt = Date.now();
+    await student.save();
   }
-  isEnrolled.startedAt = Date.now();
-  await student.save();
 
-  res.send(exam);
+  res.send({ exam, studentExam });
   // res.send(student);
 
   // const startedExam = new Date()
@@ -169,6 +179,41 @@ const getExamData = async (req, res) => {
   const exam = await Exam.findById(req.params.id);
   if (!exam) return res.status(404).send({ msg: 'invalid auth' });
   res.send(exam);
+};
+
+const getExamScore = async (req, res) => {
+  const student = await Student.findById(req.body.userId);
+  const exam = await Exam.findById(req.params.id);
+
+  const studentExam = student.exams.find(
+    (exam) => String(exam.examId) === String(req.params.id)
+  );
+
+  if (!studentExam) {
+    return res.status(404).send({ msg: 'no exam found!' });
+  }
+
+  const answers = exam.questions.map((question) => ({
+    id: question._id,
+    questionStatement: question.questionStatement,
+    correctAnswer: question.correctAnswer,
+    studentAnswer: studentExam.answers.find(
+      (answer) => String(answer._id) === String(question._id)
+    ).answer,
+  }));
+  
+
+  res.send({
+    examData: {
+      name: exam.name,
+      score: studentExam.score,
+      startedAt: studentExam.startedAt,
+      percentage: studentExam.percentage,
+      passed: studentExam.passed,
+      showAnswers: exam.showAnswers,
+    },
+    answers,
+  });
 };
 
 const register = async (req, res) => {
@@ -234,6 +279,11 @@ const login = async (req, res) => {
   }
 };
 
+const getProfile = async (req, res) => {
+  const student = await Student.findById(req.body.userId);
+  res.send(student);
+};
+
 const getExamCorrectAnswers = async (req, res) => {
   const exam = await Exam.findById(req.params.id);
   let examAnswers = {};
@@ -275,4 +325,6 @@ module.exports = {
   login,
   getExamRules,
   myEnrolledExams,
+  getExamScore,
+  getProfile,
 };

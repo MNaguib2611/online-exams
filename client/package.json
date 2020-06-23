@@ -20,6 +20,7 @@
     "react-datetime-picker": "^3.0.2",
     "react-dom": "^16.13.1",
     "react-facebook-login": "^4.1.1",
+    "react-google-login": "^5.1.20",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
     "react-toast-notifications": "^2.4.0"
