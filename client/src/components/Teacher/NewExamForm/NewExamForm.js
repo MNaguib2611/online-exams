@@ -37,7 +37,6 @@ const NewExamForm = () => {
     setSuccessPercent(e.target.value);
   };
 
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!examName || !startDate || !endDate || !successPercent)
@@ -48,7 +47,7 @@ const NewExamForm = () => {
     axios
       .post(
         '/exams',
-        { startDate, endDate, rules, name: examName, duration,successPercent },
+        { startDate, endDate, rules, name: examName, duration, successPercent },
         {
           headers: {
             'x-access-token': localStorage.getItem('teacherToken'),
@@ -114,7 +113,7 @@ const NewExamForm = () => {
                       placeholder='enter success percentage'
                       value={successPercent}
                       onChange={handleSuccessPercent}
-                      title="success percentage"
+                      title='success percentage'
                     />
                   </div>
 
@@ -127,10 +126,7 @@ const NewExamForm = () => {
                   </div>
                   <div className='form-group'>
                     <label className='mr-3'>End Date:</label>
-                    <DateTimePicker
-                    onChange={handleEndDate}
-                    value={endDate}
-                  />
+                    <DateTimePicker onChange={handleEndDate} value={endDate} />
                   </div>
                   {error && <p className='text-danger'>{error}</p>}
                   <button className='btn  btn-primary btn-blue' type='submit'>

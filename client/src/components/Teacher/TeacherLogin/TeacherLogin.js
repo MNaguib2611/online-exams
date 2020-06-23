@@ -9,7 +9,6 @@ export const TeacherLogin = (props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [loginMethod, setLoginMethod] = useState("");
 
   const [loginMethod, setLoginMethod] = useState('');
   const [facebookID, setFacebookID] = useState('');

@@ -5,6 +5,7 @@ import TeacherExamDetails from '../../../components/Teacher/TeacherExamDetails/T
 import TeacherExamQuestions from '../../../components/Teacher/TeacherExamQuestions/TeacherExamQuestions';
 import Spinner from '../../../components/Spinner/Spinner';
 import { useParams } from 'react-router-dom';
+import TeacherTrueFalseQuestion from '../../../components/Teacher/TeacherQuestion/TeacherTrueFalseQuestion';
 
 const TeacherEditExam = (props) => {
   const { id } = useParams();
