@@ -1,8 +1,8 @@
 import React from 'react';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
-import axios from '../../../axios';
-const TeacherExamQuestions = ({ exam, handleShowForm, fetchExam }) => {
+import axios from '../../axios';
+const TeacherExamQuestions = ({ exam, handleShowForm,handleTrueORFalseForm, fetchExam }) => {
   const handleDelete = (id) => {
     confirmAlert({
       customUI: ({ onClose }) => {
@@ -66,6 +66,9 @@ const TeacherExamQuestions = ({ exam, handleShowForm, fetchExam }) => {
                     {question.answers.map((answer) => (
                       <th key={answer}>{answer}</th>
                     ))}
+                    {
+                      question.answers.length===2 && <th key="None">-</th>
+                    }
 
                     <th>
                       <span
@@ -82,8 +85,12 @@ const TeacherExamQuestions = ({ exam, handleShowForm, fetchExam }) => {
 
                 <tr>
                   <td colSpan='5' className='text-center'>
-                    <button className='btn btn-blue' onClick={handleShowForm}>
-                      Add New Question
+                    <button className='btn btn-blue mr-2 mb-2' onClick={handleShowForm}>
+                      Add New MCQ Question
+                    </button>
+                  
+                    <button className='btn btn-blue mb-2' onClick={handleTrueORFalseForm}>
+                      Add New  True/False Question
                     </button>
                   </td>
                 </tr>

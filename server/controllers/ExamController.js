@@ -14,9 +14,9 @@ exports.listExams = async (req, res) => {
 
 // Teacher can create exam
 exports.createExam = async (req, res) => {
-  const { userId, rules, startDate, endDate, name, duration } = req.body;
+  const { userId, rules, startDate, endDate, name, duration,successPercent } = req.body;
 
-  if ((rules.length && startDate && endDate && name && userId && duration)) {
+  if ((rules.length && startDate && endDate && name && userId && duration &&successPercent)) {
     const exam = new Exam({
       teacher: userId,
       key: uniqid(),
@@ -25,6 +25,7 @@ exports.createExam = async (req, res) => {
       rules,
       name,
       duration,
+      successPercent
     });
     try {
       await exam.save();

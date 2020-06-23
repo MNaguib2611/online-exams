@@ -16,6 +16,9 @@ const sendAnswers = async (req, res) => {
     if (student.score !== null) {
       return res.status(401).send({ msg: 'you did this exam before' });
     }
+    if (student.mustSubmitBefore < Date.now()) {
+      return res.status(401).send({ msg: 'you have exceeded the time limit' });
+    }
     let score = 0;
 
     studentAnswers.forEach((studentAnswer) => {
@@ -26,13 +29,15 @@ const sendAnswers = async (req, res) => {
     });
 
     student.score = score;
+    student.percentage = (100*score)/exam.questions.length
+    student.submittedAt=Date.now();
     await student.save();
     sendMail(student.email, 'studentScore', {
       studentName: student.name,
       examName: exam.name,
       score: score,
     });
-    res.status(200).send({ score });
+    res.status(200).send({ score,percentage });
   } catch (error) {
     res.send(error);
   }

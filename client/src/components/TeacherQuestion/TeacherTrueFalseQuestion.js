@@ -1,23 +1,22 @@
 import React, { useState } from 'react';
-import axios from '../../../axios';
+import axios from '../../axios';
 import { useToasts } from 'react-toast-notifications';
 
-const TeacherQuestion = (props) => {
+const TeacherTrueFalseQuestion = (props) => {
   const { addToast } = useToasts();
   const [title, setTitle] = useState('');
-  const [firstChoice, setFirstChoice] = useState('');
-  const [secondChoice, setSecondChoice] = useState('');
-  const [thirdChoice, setThirdChoice] = useState('');
   const [rightChoice, setRightChoice] = useState('');
   const [error, setError] = useState('');
   let singleMode;
 
+//   const [choice, setChoice] = useState(answer);
+
+
+
+
   const clearInputs = () => {
     setError('');
     setTitle('');
-    setFirstChoice('');
-    setSecondChoice('');
-    setThirdChoice('');
     setRightChoice('');
   };
 
@@ -25,17 +24,6 @@ const TeacherQuestion = (props) => {
     setTitle(e.target.value);
   };
 
-  const handleFirstChoice = (e) => {
-    setFirstChoice(e.target.value);
-  };
-
-  const handleSecondChoice = (e) => {
-    setSecondChoice(e.target.value);
-  };
-
-  const handleThirdChoice = (e) => {
-    setThirdChoice(e.target.value);
-  };
 
   const handleRightChoice = (e) => {
     setRightChoice(e.target.value);
@@ -53,33 +41,16 @@ const TeacherQuestion = (props) => {
   const addNewQuestion = () => {
     if (
       !title ||
-      !firstChoice ||
-      !secondChoice ||
-      !thirdChoice ||
       !rightChoice
     ) {
-      return setError('please fill all fields');
-    } else if (
-      rightChoice !== firstChoice &&
-      rightChoice !== secondChoice &&
-      rightChoice !== thirdChoice
-    ) {
-      return setError('right answer does not match any answer');
-    }
-    else if (
-      firstChoice  === secondChoice || 
-      firstChoice  === thirdChoice  ||
-      secondChoice === thirdChoice
-    ) {
-      return setError("Answers can't be duplicated!");
-    }
-
+      return setError('please fill question and choose the correct answer');
+    } 
     axios
       .put(
         '/exams/' + props.examId + '/question',
         {
           question: title,
-          answers: [firstChoice, secondChoice, thirdChoice],
+          answers: ["True", "False"],
           correctAnswer: rightChoice,
         },
         {
@@ -95,7 +66,7 @@ const TeacherQuestion = (props) => {
         });
         clearInputs();
         if (singleMode) {
-          props.handleShowForm();
+          props.handleTrueORFalseForm();
         }
         props.fetchExam();
       })
@@ -105,7 +76,7 @@ const TeacherQuestion = (props) => {
   };
 
   return (
-    <section id='new-exam' className='drop-back'>
+    <section id='new-exam' className="drop-back">
       <div className='container'>
         <div className='row'>
           <div className='col-md-8 offset-2'>
@@ -123,42 +94,37 @@ const TeacherQuestion = (props) => {
                     onChange={handleTitle}
                   />
                 </div>
-                <div className='form-group'>
-                  <input
-                    type='text'
-                    className='form-control'
-                    placeholder='enter first choice'
-                    value={firstChoice}
-                    onChange={handleFirstChoice}
-                  />
-                </div>
-                <div className='form-group'>
-                  <input
-                    type='text'
-                    className='form-control'
-                    placeholder='enter second choice'
-                    value={secondChoice}
-                    onChange={handleSecondChoice}
-                  />
-                </div>
-                <div className='form-group'>
-                  <input
-                    type='text'
-                    className='form-control'
-                    placeholder='enter third choice'
-                    value={thirdChoice}
-                    onChange={handleThirdChoice}
-                  />
-                </div>
-
-                <div className='form-group'>
-                  <input
-                    type='text'
-                    className='form-control'
-                    placeholder='enter the right choice'
-                    value={rightChoice}
-                    onChange={handleRightChoice}
-                  />
+                <div className='form-group choices'>
+                  <ul>
+                  <li key='True'>
+                    <input
+                      type='radio'
+                      name="TrueOrFalse"
+                      id='f-option-True' 
+                      checked={rightChoice === 'True'}
+                      value='True'
+                      onChange={handleRightChoice}
+                    />
+                    <label htmlFor={'f-option-True'}>
+                      True
+                    </label>
+                    <div className='check'></div>
+                  </li>
+                  <li key='False'>
+                    <input
+                      type='radio'
+                      name="TrueOrFalse"
+                      id='f-option-False' 
+                      checked={rightChoice === 'False'}
+                      value='False'
+                      onChange={handleRightChoice}
+                    />
+                    <label htmlFor={'f-option-False'}>
+                      False
+                    </label>
+                    <div className='check'></div>
+                  </li>
+                  </ul>
                 </div>
                 {error && <p className='text-danger'>{error}</p>}
                 <button
@@ -176,7 +142,7 @@ const TeacherQuestion = (props) => {
 
                 <button
                   className='btn btn-danger ml-3'
-                  onClick={props.handleShowForm}
+                  onClick={props.handleTrueORFalseForm}
                 >
                   Cancel
                 </button>
@@ -189,4 +155,4 @@ const TeacherQuestion = (props) => {
   );
 };
 
-export default TeacherQuestion;
+export default TeacherTrueFalseQuestion;

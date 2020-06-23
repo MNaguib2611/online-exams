@@ -80,6 +80,7 @@ export const Exam = (props) => {
                       }
                     )
                     .then((res) => {
+                      console.log("result returned",res)
                       onClose();
                       props.getData();
                       history.push('/score');
@@ -89,7 +90,9 @@ export const Exam = (props) => {
                       localStorage.removeItem(
                         'answers' + context.exam.exam._id
                       );
-                      console.log(err);
+                      localStorage.removeItem('studentToken');
+                      localStorage.removeItem('answers' + context.exam.exam._id);
+                      history.push('/');
                     });
                 }}
               >

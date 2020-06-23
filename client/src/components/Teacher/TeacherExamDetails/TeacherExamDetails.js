@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import DatePicker from 'react-datepicker';
+import DateTimePicker from 'react-datetime-picker';
 import 'react-datepicker/dist/react-datepicker.css';
 import axios from '../../../axios';
 import { useToasts } from 'react-toast-notifications';
@@ -15,6 +15,7 @@ const TeacherExamDetails = ({ exam }) => {
   const [endDate, setEndDate] = useState('');
   const [rules, setRules] = useState('');
   const [duration, setDuration] = useState();
+  const [successPercent, setSuccessPercent] = useState();
 
   useEffect(() => {
     setTitle(exam.name);
@@ -23,6 +24,7 @@ const TeacherExamDetails = ({ exam }) => {
     setEndDate(new Date(exam.endDate));
     setRules(exam.rules);
     setDuration(exam.duration);
+    setSuccessPercent(exam.successPercent)
   }, []);
   const handleStartDate = (date) => {
     setStartDate(date);
@@ -43,10 +45,17 @@ const TeacherExamDetails = ({ exam }) => {
   const handleExamDuration = (e) => {
     setDuration(e.target.value);
   };
+  const handleSuccessPercent = (e) => {
+    setSuccessPercent(e.target.value);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!examName || !startDate || !endDate)
+    if (successPercent<0 || successPercent>100 )
+      return setError('please enter a valid success percentage');
+      if (duration<0)
+      return setError('please enter a valid exam duration');
+    if (!successPercent || !duration ||!examName || !startDate || !endDate)
       return setError('please fill all fields');
 
     setError('');
@@ -54,7 +63,7 @@ const TeacherExamDetails = ({ exam }) => {
     axios
       .put(
         '/exams/' + exam._id,
-        { startDate, endDate, rules, name: examName, duration },
+        { startDate, endDate, rules, name: examName, duration,successPercent },
         {
           headers: {
             'x-access-token': localStorage.getItem('teacherToken'),
@@ -90,6 +99,7 @@ const TeacherExamDetails = ({ exam }) => {
                   placeholder='enter exam name'
                   value={examName}
                   onChange={handleExamName}
+                  title = "exam name"
                 />
               </div>
 
@@ -99,6 +109,7 @@ const TeacherExamDetails = ({ exam }) => {
                   className='form-control'
                   placeholder='exam rules'
                   onChange={handleExamRules}
+                  title="rules"
                 />
               </div>
 
@@ -109,16 +120,34 @@ const TeacherExamDetails = ({ exam }) => {
                   placeholder='enter duration in minutes'
                   value={duration}
                   onChange={handleExamDuration}
+                  title="duration"
+                />
+              </div>
+
+              <div className='form-group'>
+                <input
+                  type='number'
+                  className='form-control'
+                  placeholder='enter success percentage'
+                  value={successPercent}
+                  onChange={handleSuccessPercent}
+                  title="success percentage"
                 />
               </div>
 
               <div className='form-group'>
                 <label className='mr-2'>Start Date:</label>
-                <DatePicker selected={startDate} onChange={handleStartDate} />
+                <DateTimePicker
+                  onChange={handleStartDate}
+                  value={startDate}
+                />
               </div>
               <div className='form-group'>
                 <label className='mr-3'>End Date:</label>
-                <DatePicker selected={endDate} onChange={handleEndDate} />
+                <DateTimePicker
+                  onChange={handleEndDate}
+                  value={endDate}
+                />
               </div>
               {error && <p className='text-danger'>{error}</p>}
               <button className='btn  btn-primary btn-blue' type='submit'>

@@ -10,8 +10,14 @@ const TeacherEditExam = (props) => {
   const { id } = useParams();
   const [exam, setExam] = useState();
   const [showForm, setShowForm] = useState(false);
+  const [TrueORFalseShowForm, setTrueORFalseShowForm] = useState(false);
   const handleShowForm = () => {
+    setTrueORFalseShowForm(false);
     setShowForm(!showForm);
+  };
+  const handleTrueORFalseForm = () => {
+    setShowForm(false);
+    setTrueORFalseShowForm(!TrueORFalseShowForm);
   };
   const fetchExam = () => {
     axios
@@ -42,11 +48,19 @@ const TeacherEditExam = (props) => {
             fetchExam={fetchExam}
           />
         )}
+        {TrueORFalseShowForm && (
+          <TeacherTrueFalseQuestion
+            examId={exam._id}
+            handleTrueORFalseForm={handleTrueORFalseForm}
+            fetchExam={fetchExam}
+          />
+        )}
 
         <TeacherExamQuestions
           fetchExam={fetchExam}
           exam={exam}
           handleShowForm={handleShowForm}
+          handleTrueORFalseForm={handleTrueORFalseForm}
         />
       </>
     )) || <Spinner />

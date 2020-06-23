@@ -9,6 +9,7 @@ export const TeacherLogin = (props) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loginMethod, setLoginMethod] = useState("");
 
   const [loginMethod, setLoginMethod] = useState('');
   const [facebookID, setFacebookID] = useState('');
@@ -23,27 +24,29 @@ export const TeacherLogin = (props) => {
     setPassword(e.target.value);
   };
   const handleSubmit = () => {
-    if (!email) setError('please fill all fields');
-
-    axios
-      .post('teacher/login', { email, password, loginMethod, facebookID, name })
+    setLoginMethod("normal");
+    if (!email || !password) {
+      setError('please fill all fields');
+    } else {
+      
+      axios
+      .post('teacher/login', { email, password, loginMethod })
       .then((result) => {
         localStorage.setItem('teacherToken', result.data.token);
         history.push('/teacher');
       })
       .catch((err) => {
-        console.log(error);
+        console.log(err);
         setError('invalid credentials');
       });
+
+    }
+
   };
 
   const methods = {
-    submit: handleSubmit,
-    email: setEmail,
-    faceID: setFacebookID,
-    logMethod: setLoginMethod,
-    name: setName,
-  };
+    setError,
+  }
 
   return (
     <div id='teacher-form'>
@@ -90,7 +93,9 @@ export const TeacherLogin = (props) => {
             SING IN
           </button>
         </form>
-        <hr />
+        <hr/>
+
+        <LoginWithFacebook methods={methods} history={history}/>
 
         <LoginWithFacebook methods={methods} />
       </div>

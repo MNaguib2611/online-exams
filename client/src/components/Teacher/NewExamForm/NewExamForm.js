@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useToasts } from 'react-toast-notifications';
-import DatePicker from 'react-datepicker';
+import DateTimePicker from 'react-datetime-picker';
 import 'react-datepicker/dist/react-datepicker.css';
 import axios from '../../../axios';
 const NewExamForm = () => {
@@ -13,7 +13,7 @@ const NewExamForm = () => {
   const [endDate, setEndDate] = useState(new Date());
   const [rules, setRules] = useState('');
   const [duration, setDuration] = useState();
-
+  const [successPercent, setSuccessPercent] = useState();
   const handleStartDate = (date) => {
     setStartDate(date);
   };
@@ -33,10 +33,14 @@ const NewExamForm = () => {
   const handleExamDuration = (e) => {
     setDuration(e.target.value);
   };
+  const handleSuccessPercent = (e) => {
+    setSuccessPercent(e.target.value);
+  };
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!examName || !startDate || !endDate)
+    if (!examName || !startDate || !endDate || !successPercent)
       return setError('please fill all fields');
 
     setError('');
@@ -44,7 +48,7 @@ const NewExamForm = () => {
     axios
       .post(
         '/exams',
-        { startDate, endDate, rules, name: examName, duration },
+        { startDate, endDate, rules, name: examName, duration,successPercent },
         {
           headers: {
             'x-access-token': localStorage.getItem('teacherToken'),
@@ -104,15 +108,29 @@ const NewExamForm = () => {
                     />
                   </div>
                   <div className='form-group'>
+                    <input
+                      type='number'
+                      className='form-control'
+                      placeholder='enter success percentage'
+                      value={successPercent}
+                      onChange={handleSuccessPercent}
+                      title="success percentage"
+                    />
+                  </div>
+
+                  <div className='form-group'>
                     <label className='mr-2'>Start Date:</label>
-                    <DatePicker
-                      selected={startDate}
+                    <DateTimePicker
                       onChange={handleStartDate}
+                      value={startDate}
                     />
                   </div>
                   <div className='form-group'>
                     <label className='mr-3'>End Date:</label>
-                    <DatePicker selected={endDate} onChange={handleEndDate} />
+                    <DateTimePicker
+                    onChange={handleEndDate}
+                    value={endDate}
+                  />
                   </div>
                   {error && <p className='text-danger'>{error}</p>}
                   <button className='btn  btn-primary btn-blue' type='submit'>
