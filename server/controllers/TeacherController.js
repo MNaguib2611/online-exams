@@ -1,8 +1,7 @@
 const TeacherModel = require('../models/TeacherModel.js');
-const StudentModel = require("../models/StudentModel.js");
+const StudentModel = require('../models/StudentModel.js');
 const TeacherController = {};
 
-var bodyParser = require('body-parser');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
 
@@ -22,19 +21,25 @@ TeacherController.register = async (req, res) => {
   } catch (err) {
     console.log('error in register a teacher.');
     console.log(err);
-    res.status(500).send('There was a problem registering the user,please check all inputs. ');
+    res
+      .status(500)
+      .send(
+        'There was a problem registering the user,please check all inputs. '
+      );
   }
 };
 
 TeacherController.login = async (req, res) => {
   try {
-    if(req.body.loginMethod === "facebook"){
-      await TeacherController.loginWithFaceBook(req,res);
+    if (req.body.loginMethod === 'facebook') {
+      await TeacherController.loginWithFaceBook(req, res);
     } else {
       const Teacher = await TeacherModel.findOne({ email: req.body.email });
-      if(Teacher.facebookID){
-        console.log("Teacher Did not create a password, logged with facebook");
-        res.status(409).send("You seem to have logged with your facebook acount.")
+      if (Teacher.facebookID) {
+        console.log('Teacher Did not create a password, logged with facebook');
+        res
+          .status(409)
+          .send('You seem to have logged with your facebook acount.');
       } else if (Teacher) {
         const match = await bcrypt.compare(req.body.password, Teacher.password);
         if (match) {
@@ -84,20 +89,31 @@ TeacherController.authenticate = async (req, res, next) => {
   }
 };
 
-TeacherController.getExamStatus = async (req, res)=>{
-  let Students = await StudentModel.find({exam: req.params.id}).where("score").ne(null).sort({'_id': -1}).limit(15);
+TeacherController.getExamStatus = async (req, res) => {
+  let Students = await StudentModel.find({ exam: req.params.id })
+    .where('score')
+    .ne(null)
+    .sort({ _id: -1 })
+    .limit(15);
   res.status(200).send(Students);
-}
+};
 
 TeacherController.loginWithFaceBook = async (req, res) => {
-  let Teacher = await TeacherModel.findOne({email: req.body.email, facebookID: req.body.facebookID});
-  if(Teacher){
+  let Teacher = await TeacherModel.findOne({
+    email: req.body.email,
+    facebookID: req.body.facebookID,
+  });
+  console.log(Teacher);
+
+  if (Teacher) {
     let token = jwt.sign({ id: Teacher._id }, process.env.SECRET, {
       expiresIn: 86400, // expires in 24 hours
     });
-    res.status(200).send({ auth: true, token: token });        
+    console.log('Teacher Login ', Teacher);
+    res.status(200).send({ auth: true, token: token });
   } else {
     Teacher = new TeacherModel();
+    console.log('Teacher Register ', Teacher);
     Teacher.name = req.body.name;
     Teacher.email = req.body.email;
     Teacher.facebookID = req.body.facebookID;
@@ -107,5 +123,5 @@ TeacherController.loginWithFaceBook = async (req, res) => {
     });
     res.status(200).send({ auth: true, token: token });
   }
-}
+};
 module.exports = TeacherController;

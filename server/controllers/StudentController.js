@@ -1,11 +1,9 @@
 var jwt = require('jsonwebtoken');
+var bcrypt = require('bcrypt');
 
 const Exam = require('../models/ExamModel');
 const Student = require('../models/StudentModel');
 const sendMail = require('../email');
-const StudentModel = require('../models/StudentModel');
-const { reset } = require('nodemon');
-// Student can submit his answers
 const sendAnswers = async (req, res) => {
   const studentAnswers = req.body.answers;
   try {
@@ -87,11 +85,11 @@ const getExamByCode = (req, res) => {
 const authenticate = async (req, res, next) => {
   if (req.headers['x-access-token']) {
     try {
-      let decoded = await jwt.verify(
+      let decoded = jwt.verify(
         req.headers['x-access-token'],
         process.env.SECRET
       );
-      let student = StudentModel.find({ _id: decoded.studentId });
+      let student = Student.find({ _id: decoded.studentId });
       if (student) {
         req.body.userId = decoded.studentId;
         req.body.examId = decoded.examId;
@@ -137,11 +135,72 @@ const studentStartExam = (req, res) => {
 };
 
 const getExamData = async (req, res) => {
-  const exam = await Exam.findById(req.body.examId);
-  const student = await Student.findById(req.body.userId);
+  const exam = await Exam.findById(req.params.id);
+  if (!exam) return res.status(404).send({ msg: 'invalid auth' });
+  res.send(exam);
+};
 
-  if (!exam || !student) return res.status(404).send({ msg: 'invalid auth' });
-  res.send({ exam, student });
+const register = async (req, res) => {
+  const {
+    firstName,
+    lastName,
+    email,
+    school,
+    password,
+    confirmPassword,
+  } = req.body;
+
+  if (
+    !firstName ||
+    !lastName ||
+    !email ||
+    !school ||
+    !password ||
+    !confirmPassword
+  )
+    return res.status(401).send({ msg: 'please fill all fields' });
+  else if (password !== confirmPassword)
+    return res.status(401).send({ msg: 'password does not match' });
+
+  const student = await Student.findOne({ email });
+
+  if (student) return res.status(401).send({ msg: 'email already exist' });
+
+  const hashedPassword = bcrypt.hashSync(req.body.password, 8);
+  try {
+    const student = await Student.create({
+      firstName,
+      lastName,
+      email,
+      school,
+      password: hashedPassword,
+    });
+    res.status(200).send(student);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+};
+
+const login = async (req, res) => {
+  try {
+    const student = await Student.findOne({ email: req.body.email });
+    if (student) {
+      const match = await bcrypt.compare(req.body.password, student.password);
+      if (match) {
+        let token = jwt.sign({ id: student._id }, process.env.SECRET, {
+          expiresIn: 86400, // expires in 24 hours
+        });
+        res.status(200).send({ auth: true, token: token, student });
+      } else {
+        res.status(404).send("Couldn't find the student.");
+      }
+    } else {
+      res.status(404).send("Couldn't find the student.");
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(404).send("Couldn't find the student.");
+  }
 };
 
 module.exports = {
@@ -150,4 +209,6 @@ module.exports = {
   studentStartExam,
   authenticate,
   getExamData,
+  register,
+  login,
 };

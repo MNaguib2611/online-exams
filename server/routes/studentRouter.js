@@ -5,9 +5,14 @@ const {
   authenticate,
   sendAnswers,
   getExamData,
+  register,
+  login,
 } = require('../controllers/StudentController');
 
 const router = new Router();
+
+router.post('/register', register);
+router.post('/login', login);
 
 router.get('/examData', authenticate, getExamData);
 router.post('/answers', authenticate, sendAnswers);

@@ -1,12 +1,20 @@
 import React, { useState, useContext } from 'react';
 import { Tab, Tabs } from 'react-bootstrap';
 import bgImage from './login_bg.jpg';
-import { StudentEnroll } from './../../components/StudentEnroll/StudentEnroll';
-import { TeacherLogin } from '../../components/TeacherLogin/TeacherLogin';
-import { TeacherRegister } from '../../components/TeacherRegister/TeacherRegister';
+// import { StudentEnroll } from './../../components/StudentEnroll/StudentEnroll';
+import { TeacherLogin } from '../../components/Teacher/TeacherLogin/TeacherLogin';
+import { TeacherRegister } from '../../components/Teacher/TeacherRegister/TeacherRegister';
+import { StudentLogin } from '../../components/Student/StudentLogin/StudentLogin';
+import { StudentRegister } from '../../components/Student/StudentRegister/StudentRegister';
+import requireGuest from '../../hocs/requireGuest';
 const Home = () => {
   const [key, setKey] = useState('student');
   const [teacherLogin, setTeacherLogin] = useState(true);
+  const [studentLogin, setStudentLogin] = useState(true);
+  const toggleStudentForm = () => {
+    setStudentLogin(!studentLogin);
+  };
+
   const toggleTeacherForm = () => {
     setTeacherLogin(!teacherLogin);
   };
@@ -21,7 +29,14 @@ const Home = () => {
               onSelect={(k) => setKey(k)}
             >
               <Tab eventKey='student' title='Student'>
-                <StudentEnroll />
+                <div className={studentLogin ? '' : 'hidden'}>
+                  <StudentLogin toggleStudentForm={toggleStudentForm} />
+                </div>
+                <div className={studentLogin ? 'hidden' : ''}>
+                  <StudentRegister toggleStudentForm={toggleStudentForm} />
+                </div>
+
+                {/* <StudentEnroll /> */}
               </Tab>
               <Tab eventKey='teacher' title='Teacher'>
                 <div className={teacherLogin ? '' : 'hidden'}>
@@ -39,4 +54,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default requireGuest(Home);
