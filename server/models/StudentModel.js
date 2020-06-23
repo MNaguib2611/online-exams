@@ -36,10 +36,11 @@ const StudentSchema = mongoose.Schema(
     },
     exams: [
       {
-        examId: { type: 'ObjectId', ref: 'Exam', unique: true },
+        examId: { type: 'ObjectId', ref: 'Exam' },
         score: Number,
         startedAt: Date,
         percentage: Number,
+        passed: Boolean,
         answers: [
           {
             questionId: mongoose.SchemaTypes.ObjectId,

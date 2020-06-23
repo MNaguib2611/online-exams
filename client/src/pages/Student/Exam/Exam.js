@@ -18,7 +18,9 @@ export const Exam = (props) => {
   const history = useHistory();
   const [currentQuestion, setCurrentQuestion] = useState(1);
   const [canSubmit, setCanSubmit] = useState(false);
+
   const [exam, setExam] = useState();
+  const [studentExam, setStudentExam] = useState();
   const { id } = useParams();
 
   const startExam = () => {
@@ -33,7 +35,8 @@ export const Exam = (props) => {
         }
       )
       .then((result) => {
-        setExam(result.data);
+        setExam(result.data.exam);
+        setStudentExam(result.data.studentExam);
         setShowDate(true);
         setCanSubmit(true);
       })
@@ -102,10 +105,8 @@ export const Exam = (props) => {
                       }
                     )
                     .then((res) => {
-                      console.log('result returned', res);
                       onClose();
-                      console.log(res);
-                      // history.push('/score');
+                      history.push('/student/exams/' + id + '/score');
                     })
                     .catch((err) => {
                       console.log(err.response);
@@ -146,13 +147,13 @@ export const Exam = (props) => {
               <div className='exam-card mt-5'>
                 <div className='heading'>
                   <h3 className='text-capitalize'>{exam.name} Exam</h3>
-                  {/* <h6>
+                  <h6>
                     Remaining Time:
                     {(showDate && (
                       <DateCountdown
                         dateTo={new Date(
-                          new Date(exam.student.startedAt).setMinutes(
-                            new Date(exam.student.startedAt).getMinutes() +
+                          new Date(studentExam.startedAt).setMinutes(
+                            new Date(studentExam.startedAt).getMinutes() +
                               exam.duration
                           )
                         ).toString()}
@@ -161,7 +162,7 @@ export const Exam = (props) => {
                         }}
                       />
                     )) || <span> Hours : Minutes : Seconds</span>}
-                  </h6> */}
+                  </h6>
                 </div>
                 <div className='body'>
                   {answers &&
