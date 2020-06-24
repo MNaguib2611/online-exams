@@ -188,7 +188,7 @@ const getExamScore = async (req, res) => {
     (exam) => String(exam.examId) === String(req.params.id)
   );
 
-  if (!studentExam) {
+  if (!studentExam || !studentExam.score) {
     return res.status(404).send({ msg: 'no exam found!' });
   }
 
@@ -200,7 +200,6 @@ const getExamScore = async (req, res) => {
       (answer) => String(answer._id) === String(question._id)
     ).answer,
   }));
-  
 
   res.send({
     examData: {
