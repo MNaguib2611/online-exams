@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import AnswersTable from '../../../components/AnswersTable/AnswersTable';
 import { useParams } from 'react-router-dom';
 import axios from '../../../axios';
-import Spinner from '../../../components/Loading/Loading';
+import Loading from '../../../components/Loading/Loading';
 export const Score = () => {
   const { id } = useParams();
   const [exam, setExam] = useState();
@@ -78,6 +78,6 @@ export const Score = () => {
           </div>
         </div>
       </section>
-    )) || <Spinner />
+    )) || <Loading />
   );
 };

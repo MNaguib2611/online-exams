@@ -6,9 +6,9 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import axios from '../../../axios';
 import { useHistory, useParams } from 'react-router-dom';
-import Spinner from '../../../components/Spinner/Spinner';
 import Question from '../../../components/Student/Question/Question';
 import { useToasts } from 'react-toast-notifications';
+import Loading from '../../../components/Loading/Loading';
 
 export const Exam = (props) => {
   const { addToast } = useToasts();
@@ -248,6 +248,6 @@ export const Exam = (props) => {
           </div>
         </div>
       </section>
-    )) || <Spinner />
+    )) || <Loading />
   );
 };

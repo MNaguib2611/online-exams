@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import axios from '../../../axios';
-import Spinner from '../../../components/Spinner/Spinner';
+import Loading from '../../../components/Loading/Loading';
 export const ExamRules = (props) => {
   const history = useHistory();
   const [exam, setExamRules] = useState({});
@@ -70,6 +70,6 @@ export const ExamRules = (props) => {
           </div>
         </div>
       </section>
-    )) || <Spinner />
+    )) || <Loading />
   );
 };

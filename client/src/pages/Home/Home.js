@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Tab, Tabs } from 'react-bootstrap';
 import bgImage from './login_bg.jpg';
 // import { StudentEnroll } from './../../components/StudentEnroll/StudentEnroll';
@@ -27,8 +27,10 @@ const Home = () => {
 
   
   return (
-    <section id='login' style={{ backgroundImage: `url(${bgImage})` }}>
-      <div className='overly'>
+    <>
+      <img src={bgImage} alt='background' className='bgImage' />
+      <div className='bgOverly'></div>
+      <section id='login'>
         <div className='container'>
           <div className='form-container'>
             <Tabs
@@ -81,8 +83,8 @@ const Home = () => {
             </Tabs>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 };
 

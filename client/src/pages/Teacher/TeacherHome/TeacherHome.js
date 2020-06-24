@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import TeacherExamList from '../../../components/Teacher/TeacherExamList/TeacherExamList';
 import { TeacherContext } from '../../../context/teacherContext';
 import axios from '../../../axios';
-import Spinner from '../../../components/Spinner/Spinner';
+import Loading from '../../../components/Loading/Loading';
 const TeacherHome = (props) => {
   const context = useContext(TeacherContext);
   const fetchExams = () => {
@@ -33,7 +33,7 @@ const TeacherHome = (props) => {
           fetchExams={fetchExams}
         />
       </>
-    )) || <Spinner />
+    )) || <Loading />
   );
 };
 
