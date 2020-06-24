@@ -48,7 +48,8 @@ const StudentHeader = () => {
             <span
               className='nav-link d-flex flex-column justify-content-center align-items-center'
               onClick={() => {
-                localStorage.removeItem('studentToken');
+                // localStorage.removeItem('studentToken');
+                localStorage.clear();
                 history.push('/');
               }}
             >

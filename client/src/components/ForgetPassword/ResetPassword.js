@@ -1,57 +1,45 @@
-import React, { useState, useContext } from 'react';
-import axios from '../../../axios';
+import React, { useState } from 'react';
+import axios from '../../axios';
 import { useToasts } from 'react-toast-notifications';
 
-export const StudentRegister = (props) => {
+export const ResetPassword = (props) => {
   const [error, setError] = useState('');
   const { addToast } = useToasts();
   const [email, setEmail] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [school, setSchool] = useState('');
+  const [code, setCode] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
 
   const handleEmail = (e) => {
     setEmail(e.target.value);
   };
-
-  const handleFirstName = (e) => {
-    setFirstName(e.target.value);
+  const handleCode = (e) => {
+    setCode(e.target.value);
   };
-
-  const handleLastName = (e) => {
-    setLastName(e.target.value);
-  };
-
-  const handleSchool = (e) => {
-    setSchool(e.target.value);
-  };
-
   const handlePassword = (e) => {
     setPassword(e.target.value);
   };
-
   const handleConfirmPassword = (e) => {
     setConfirmPassword(e.target.value);
   };
 
+
   const register = () => {
+    if ( password !== confirmPassword)
+    return setError('passwords don\'t match');
     axios
-      .post('/students/register', {
-        firstName,
-        lastName,
+      .put(`${props.resetURL}`, {
         email,
-        password,
-        confirmPassword,
-        school,
+        code,
+        password
       })
       .then((result) => {
-        addToast('Account Created Successfully', {
+        addToast('Password has been reset successfully', {
           appearance: 'info',
           autoDismiss: true,
         });
-        props.toggleStudentForm(0);
+        props.toggleForm(0);
       })
       .catch((err) => {
         setError(err.response.data.msg);
@@ -80,36 +68,13 @@ export const StudentRegister = (props) => {
             required
           />
         </div>
-
         <div className='form-group'>
           <input
             type='text'
             className='form-control'
-            placeholder='Enter your first name'
-            value={firstName}
-            onChange={handleFirstName}
-            required
-          />
-        </div>
-
-        <div className='form-group'>
-          <input
-            type='text'
-            className='form-control'
-            placeholder='Enter your last name'
-            value={lastName}
-            onChange={handleLastName}
-            required
-          />
-        </div>
-
-        <div className='form-group'>
-          <input
-            type='text'
-            className='form-control'
-            placeholder='Enter your school'
-            value={school}
-            onChange={handleSchool}
+            placeholder='Code that was emailed to you'
+            value={code}
+            onChange={handleCode}
             required
           />
         </div>
@@ -122,6 +87,7 @@ export const StudentRegister = (props) => {
             value={password}
             onChange={handlePassword}
             required
+            minLength="8"
           />
         </div>
         <div className='form-group'>
@@ -132,20 +98,22 @@ export const StudentRegister = (props) => {
             value={confirmPassword}
             onChange={handleConfirmPassword}
             required
+            minLength="8"
           />
         </div>
+
         <div className='mb-3 text-right'>
           <a
             href='#'
             className='toggleForm text-orange'
-            onClick={() => props.toggleStudentForm(0)}
+            onClick={() => props.toggleForm(0)}
           >
             sign in?
           </a>
         </div>
         {error && <p className='ml-3 text-danger'>{error}</p>}
         <button className='btn btn-block btn-primary btn-blue' type='submit'>
-          Register
+           Reset Password
         </button>
       </form>
     </div>

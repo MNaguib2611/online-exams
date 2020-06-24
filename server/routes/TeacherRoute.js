@@ -23,4 +23,13 @@ router.get("/getExamStatus/:id", TeacherController.authenticate, (req, res)=>{
   TeacherController.getExamStatus(req, res);
 });
 
+router.put('/changePassword', (req, res) =>{
+    TeacherController.changePassword(req, res);
+});
+
+router.put("/resetPassword", (req, res)=>{
+  TeacherController.resetPassword(req, res);
+});
+
+
 module.exports = router;

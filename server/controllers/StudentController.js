@@ -1,6 +1,6 @@
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
-
+const uniqid = require('uniqid');
 const Exam = require('../models/ExamModel');
 const Student = require('../models/StudentModel');
 const sendMail = require('../email');
@@ -302,6 +302,44 @@ const myEnrolledExams = async (req, res) => {
   }
 };
 
+
+const changePassword = async (req, res) => {
+  const resetCode= uniqid();
+  const student = await Student.findOne({
+    email: req.body.email,
+  });
+  if (!student) {
+    return res.status(404).send({msg:"Student was not found"});
+  }
+  student.resetPassCode=resetCode
+  student.save();
+
+  sendMail(student.email,'resetPassword',{
+    name:student.firstName,
+    code:student.resetPassCode
+  })
+  return res.status(200).send({msg:"Password reset request was recieved"});
+};
+
+const resetPassword = async (req, res) => {
+  const student = await Student.findOne({
+    email: req.body.email,
+  });
+  if (!student) {
+    return res.status(404).send({msg:"Student was not found"});
+  }
+  if (student.resetPassCode == req.body.code) {
+    const hashedPassword = bcrypt.hashSync(req.body.password, 8);
+    student.password=hashedPassword
+    student.save()
+    return res.status(200).send({msg:"your password has been reset"});
+  } else {
+    return res.status(403).send({msg:"Incorrect code"});
+  }
+};
+
+
+
 module.exports = {
   sendAnswers,
   getExamByCode,
@@ -315,4 +353,6 @@ module.exports = {
   myEnrolledExams,
   getExamScore,
   getProfile,
+  changePassword,
+  resetPassword
 };

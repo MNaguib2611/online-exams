@@ -34,6 +34,7 @@ const StudentSchema = mongoose.Schema(
       minlength: 3,
       maxlength: 20,
     },
+    resetPassCode:String,
     exams: [
       {
         examId: { type: 'ObjectId', ref: 'Exam' },
