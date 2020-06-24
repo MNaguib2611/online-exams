@@ -46,10 +46,14 @@ const sendAnswers = async (req, res) => {
     await student.save();
 
     sendMail(student.email, 'studentScore', {
-      studentName: student.name,
+      studentName: student.firstName,
       examName: exam.name,
       score: score,
     });
+
+  
+
+
     res.status(200).send();
   } catch (error) {
     console.log(error);
@@ -220,6 +224,7 @@ const register = async (req, res) => {
     lastName,
     email,
     school,
+    grade,
     password,
     confirmPassword,
   } = req.body;
@@ -229,6 +234,7 @@ const register = async (req, res) => {
     !lastName ||
     !email ||
     !school ||
+    !grade ||
     !password ||
     !confirmPassword
   )
@@ -246,6 +252,7 @@ const register = async (req, res) => {
       firstName,
       lastName,
       email,
+      grade,
       school,
       password: hashedPassword,
     });

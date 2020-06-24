@@ -7,17 +7,30 @@ body {
 }
 
 #login {
-  background-size: cover;
   height: 100%;
   width: 100%;
-  position: absolute;
+  position: relative;
 }
-#login .overly {
-  position: absolute;
-  top: 0;
-  background-color: #00000059;
+
+.bgImage {
+  min-height: 100%;
+  min-width: 1024px;
   width: 100%;
-  height: 100%;
+  height: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.bgOverly {
+  min-height: 100%;
+  min-width: 1024px;
+  width: 100%;
+  height: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #1a1a1a61;
 }
 .form-container {
   background-color: #fff;
@@ -409,21 +422,20 @@ a:link {
   cursor: not-allowed;
 }
 
-
 @-webkit-keyframes rotation {
   from {
-      -webkit-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
   }
   to {
-      -webkit-transform: rotate(359deg);
+    -webkit-transform: rotate(359deg);
   }
 }
 
 @keyframes rotation {
   from {
-      transform: rotate(0deg);
+    transform: rotate(0deg);
   }
   to {
-      transform: rotate(359deg);
+    transform: rotate(359deg);
   }
 }

@@ -3,9 +3,9 @@ import TeacherQuestion from '../../../components/Teacher/TeacherQuestion/Teacher
 import axios from '../../../axios';
 import TeacherExamDetails from '../../../components/Teacher/TeacherExamDetails/TeacherExamDetails';
 import TeacherExamQuestions from '../../../components/Teacher/TeacherExamQuestions/TeacherExamQuestions';
-import Spinner from '../../../components/Spinner/Spinner';
 import { useParams } from 'react-router-dom';
 import TeacherTrueFalseQuestion from '../../../components/Teacher/TeacherQuestion/TeacherTrueFalseQuestion';
+import Loading from '../../../components/Loading/Loading';
 
 const TeacherEditExam = (props) => {
   const { id } = useParams();
@@ -64,7 +64,7 @@ const TeacherEditExam = (props) => {
           handleTrueORFalseForm={handleTrueORFalseForm}
         />
       </>
-    )) || <Spinner />
+    )) || <Loading />
   );
 };
 

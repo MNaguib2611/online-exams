@@ -1,5 +1,8 @@
 const TeacherModel = require('../models/TeacherModel.js');
 const StudentModel = require('../models/StudentModel.js');
+const Student = require('../models/StudentModel');
+const sendMail = require('../email');
+
 const TeacherController = {};
 
 var jwt = require('jsonwebtoken');
@@ -33,7 +36,7 @@ TeacherController.login = async (req, res) => {
   try {
     if (req.body.loginMethod === 'facebook') {
       await TeacherController.loginWithFaceBook(req, res);
-    } else if(req.body.loginMethod == 'google'){
+    } else if (req.body.loginMethod == 'google') {
       await TeacherController.loginWithGoogle(req, res);
     } else {
       const Teacher = await TeacherModel.findOne({ email: req.body.email });
@@ -42,12 +45,12 @@ TeacherController.login = async (req, res) => {
         res
           .status(409)
           .send('You seem to have logged with your facebook acount.');
-      } else if(Teacher.googleID){
+      } else if (Teacher.googleID) {
         console.log('Teacher Did not create a password, logged with facebook');
         res
           .status(409)
           .send('You seem to have logged with your facebook acount.');
-      }else if (Teacher) {
+      } else if (Teacher) {
         const match = await bcrypt.compare(req.body.password, Teacher.password);
         if (match) {
           await TeacherController.generateToken(Teacher, res);
@@ -102,6 +105,24 @@ TeacherController.getExamStatus = async (req, res) => {
   res.status(200).send(Students);
 };
 
+TeacherController.sendInvitation = async (req, res) => {
+  const { examName, examKey, school, grade } = req.body;
+  if (!examKey || !examName || !school || !grade) {
+    return res.status(403).send({ msg: 'please fill all fields' });
+  }
+
+  const students = await Student.find({ school, grade });
+  students.forEach((student) => {
+    console.log(student);
+    sendMail(student.email, 'examInvitation', {
+      studentName: student.firstName,
+      examName,
+      examKey,
+    });
+  });
+  res.send(students);
+};
+
 TeacherController.loginWithFaceBook = async (req, res) => {
   let Teacher = await TeacherModel.findOne({
     email: req.body.email,
@@ -120,7 +141,7 @@ TeacherController.loginWithFaceBook = async (req, res) => {
   }
 };
 
-TeacherController.loginWithGoogle = async (req, res ) => {
+TeacherController.loginWithGoogle = async (req, res) => {
   let Teacher = await TeacherModel.findOne({
     email: req.body.email,
     googleID: req.body.googleID,
@@ -143,5 +164,5 @@ TeacherController.generateToken = async (teacher, response) => {
     expiresIn: 86400, // expires in 24 hours
   });
   response.status(200).send({ auth: true, token: token });
-}
+};
 module.exports = TeacherController;

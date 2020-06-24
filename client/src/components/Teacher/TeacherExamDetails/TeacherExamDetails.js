@@ -3,7 +3,7 @@ import DateTimePicker from 'react-datetime-picker';
 import 'react-datepicker/dist/react-datepicker.css';
 import axios from '../../../axios';
 import { useToasts } from 'react-toast-notifications';
-import Spinner from '../../Spinner/Spinner';
+import Loading from '../../Loading/Loading';
 
 const TeacherExamDetails = ({ exam }) => {
   const { addToast } = useToasts();
@@ -172,7 +172,7 @@ const TeacherExamDetails = ({ exam }) => {
           </div>
         </div>
       </div>
-    )) || <Spinner/>
+    )) || <Loading/>
   );
 };
 

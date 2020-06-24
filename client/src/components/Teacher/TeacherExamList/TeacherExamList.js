@@ -98,6 +98,12 @@ const TeacherExamList = (props) => {
                         <i className='fas fa-eye'></i>
                       </Link>
                       <Link
+                        to={'/teacher/exams/' + exam._id + '/sendKey'}
+                        className='action'
+                      >
+                        <i className='fas fa-paper-plane'></i>
+                      </Link>
+                      <Link
                         to={'/teacher/exams/' + exam._id + '/edit'}
                         className='action'
                       >

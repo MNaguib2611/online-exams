@@ -34,6 +34,10 @@ const StudentSchema = mongoose.Schema(
       minlength: 3,
       maxlength: 20,
     },
+    grade: {
+      type: Number,
+      required: true,
+    },
     exams: [
       {
         examId: { type: 'ObjectId', ref: 'Exam' },

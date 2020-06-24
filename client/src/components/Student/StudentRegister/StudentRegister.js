@@ -9,6 +9,7 @@ export const StudentRegister = (props) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [school, setSchool] = useState('');
+  const [grade, setGrade] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -26,6 +27,9 @@ export const StudentRegister = (props) => {
 
   const handleSchool = (e) => {
     setSchool(e.target.value);
+  };
+  const handleGrade = (e) => {
+    setGrade(e.target.value);
   };
 
   const handlePassword = (e) => {
@@ -45,6 +49,7 @@ export const StudentRegister = (props) => {
         password,
         confirmPassword,
         school,
+        grade,
       })
       .then((result) => {
         addToast('Account Created Successfully', {
@@ -110,6 +115,16 @@ export const StudentRegister = (props) => {
             placeholder='Enter your school'
             value={school}
             onChange={handleSchool}
+            required
+          />
+        </div>
+        <div className='form-group'>
+          <input
+            type='number'
+            className='form-control'
+            placeholder='Enter your grade'
+            value={grade}
+            onChange={handleGrade}
             required
           />
         </div>
