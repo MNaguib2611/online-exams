@@ -38,30 +38,33 @@ export const Score = () => {
                   </h3>
                 </div>
                 <div className='body'>
-                  <div className='d-flex'>
-                    <div className='d-flex'>
-                      <strong className='mr-4'>Started at:</strong>
-                      <p className='mr-4'>
-                        {new Date(exam.examData.startedAt).toLocaleString()}
-                      </p>
+                  <div className='row'>
+                    <div className='col-md-6'>
+                      <div className='d-flex'>
+                        <strong className='mr-4'>Started at:</strong>
+                        <p className='mr-4'>
+                          {new Date(exam.examData.startedAt).toLocaleString()}
+                        </p>
+                      </div>
+                      <div className='d-flex'>
+                        <strong className='mr-4'>Percentage:</strong>
+                        <p className='mr-4'>{exam.examData.percentage} %</p>
+                      </div>
                     </div>
-                    <div className='d-flex ml-5'>
-                      <strong className='mr-4'>Score:</strong>
-                      <p className='mr-4'>{exam.examData.score}</p>
-                    </div>
-                  </div>
-                  <div className='d-flex'>
-                    <div className='d-flex'>
-                      <strong className='mr-4'>Percentage:</strong>
-                      <p className='mr-4'>{exam.examData.percentage} %</p>
-                    </div>
-                    <div className='d-flex ml-5'>
-                      <strong className='mr-4'>Result:</strong>
-                      <p className='mr-4'>
-                        {(exam.examData.passed && (
-                          <strong className='text-success'>Passed</strong>
-                        )) || <strong className='text-danger'>Failed</strong>}
-                      </p>
+
+                    <div className='col-md-6'>
+                      <div className='d-flex ml-5'>
+                        <strong className='mr-4'>Score:</strong>
+                        <p className='mr-4'>{exam.examData.score}</p>
+                      </div>
+                      <div className='d-flex ml-5'>
+                        <strong className='mr-4'>Result:</strong>
+                        <p className='mr-4'>
+                          {(exam.examData.passed && (
+                            <strong className='text-success'>Passed</strong>
+                          )) || <strong className='text-danger'>Failed</strong>}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -69,7 +72,7 @@ export const Score = () => {
             </div>
             <div className='col-md-10 offset-1'>
               {exam.examData.showAnswers && (
-                <AnswersTable examQuestions={exam.questions} />
+                <AnswersTable examQuestions={exam.answers} />
               )}
             </div>
           </div>

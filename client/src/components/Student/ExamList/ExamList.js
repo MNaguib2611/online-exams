@@ -1,33 +1,27 @@
-import React,{useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from '../../../axios';
 import { Link } from 'react-router-dom';
 
-
 const ExamList = () => {
-  
-  const [examList,setExamList]=useState([])
-
-
-
+  const [examList, setExamList] = useState([]);
 
   const fetchExam = () => {
     axios
-    .get('/students/myEnrolledExams/', {
-      headers: {
-        'x-access-token': localStorage.getItem('studentToken'),
-      },
-    })
-    .then((res) => {
-      console.log(res.data);
-      setExamList(res.data.myExams)
-    })
-    .catch((err) => console.log(err));
+      .get('/students/myEnrolledExams/', {
+        headers: {
+          'x-access-token': localStorage.getItem('studentToken'),
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setExamList(res.data.myExams);
+      })
+      .catch((err) => console.log(err));
   };
 
-
   useEffect(() => {
-    fetchExam()
-  },[])
+    fetchExam();
+  }, []);
   return (
     <section id='exam-list'>
       <div className='container'>
@@ -49,25 +43,22 @@ const ExamList = () => {
                 </tr>
               </thead>
               <tbody>
-              {
-                examList.map((exam) =>(
+                {examList.map((exam) => (
                   <tr key={exam._id}>
-                  <td>{exam.name}</td>
-                  <td>{exam.startedAt}</td>
-                  <td>{exam.percentage.toFixed(2)}%</td>
-                  <td>{exam.passed?"True":"False"}</td>
-                  <td>
-                  <Link
-                        to={`student/exams/${exam._id}/score`}
+                    <td>{exam.name}</td>
+                    <td>{exam.startedAt}</td>
+                    <td>{exam.percentage.toFixed(1)}%</td>
+                    <td>{exam.passed ? 'True' : 'False'}</td>
+                    <td>
+                      <Link
+                        to={`student/exams/${exam.examId}/score`}
                         className='action'
                       >
                         <i className='fas fa-eye'></i>
-                  </Link>
-                  </td>
-                </tr>
-                ))
-              }
-              
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

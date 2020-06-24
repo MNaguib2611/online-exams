@@ -21,17 +21,24 @@ const AnswersTable = (props) => {
                 </tr>
               </thead>
               <tbody>
-                {/* {props.examQuestions.map((question, index) => (
+                {props.examQuestions.map((question, index) => (
                   <tr key={index + question.questionStatement}>
                     <td key='questionStatement'>
                       {question.questionStatement}
                     </td>
-                    <td key='YourAnswer'>Your Answer</td>
-                    <td key='Correct Answer'>
-                      {examModelAnsers[question._id]}
+                    <td
+                      key='YourAnswer'
+                      className={
+                        question.studentAnswer === question.correctAnswer
+                          ? 'bg-success text-white'
+                          : 'bg-danger text-white'
+                      }
+                    >
+                      {question.studentAnswer}
                     </td>
+                    <td key='Correct Answer'>{question.correctAnswer}</td>
                   </tr>
-                ))} */}
+                ))}
               </tbody>
             </table>
           </div>

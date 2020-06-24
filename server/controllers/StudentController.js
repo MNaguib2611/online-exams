@@ -78,7 +78,7 @@ const getExamByCode = (req, res) => {
         $push: {
           exams: {
             examId: exam.id,
-            name:exam.name,
+            name: exam.name,
             score: null,
             startedAt: null,
             answers: [],
@@ -184,12 +184,11 @@ const getExamData = async (req, res) => {
 const getExamScore = async (req, res) => {
   const student = await Student.findById(req.body.userId);
   const exam = await Exam.findById(req.params.id);
-
   const studentExam = student.exams.find(
     (exam) => String(exam.examId) === String(req.params.id)
   );
 
-  if (!studentExam || !studentExam.score) {
+  if (!studentExam || studentExam.score === null) {
     return res.status(404).send({ msg: 'no exam found!' });
   }
 
@@ -292,26 +291,16 @@ const getExamCorrectAnswers = async (req, res) => {
   res.send({ examAnswers });
 };
 
-
-
-
-
-
-
 const myEnrolledExams = async (req, res) => {
   try {
     console.log(req.body);
     const student = await Student.findById(req.body.userId);
-    const myExams=student.exams
+    const myExams = student.exams;
     res.send({ myExams });
   } catch (error) {
     res.status(500).send({ msg: error.message });
   }
 };
-
-
-
-
 
 module.exports = {
   sendAnswers,
