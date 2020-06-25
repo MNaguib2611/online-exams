@@ -35,4 +35,10 @@ router.put("/resetPassword", (req, res)=>{
 });
 
 
+router.put("/updateProfie",TeacherController.authenticate, (req, res)=>{
+  TeacherController.updateProfie(req, res);
+});
+
+
+
 module.exports = router;

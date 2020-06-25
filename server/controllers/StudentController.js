@@ -103,6 +103,36 @@ const getExamByCode = (req, res) => {
   });
 };
 
+
+// *******************************************
+// ***************************************
+// **********************************
+// *******************************
+// *****************************
+// ****************************
+// ***************************
+
+const updateProfie = async (req, res) => {
+  const student = await Student.findById(req.body.userId);
+  if (!student) return res.status(404).send({msg:"Student was not found"});
+  if (req.body.password) {
+    const hasshedPassword = await bcrypt.hashSync(req.body.password, 8);
+    student.password=hasshedPassword
+  }
+  student.firstName=req.body.firstName
+  student.lastName=req.body.lastName
+  student.email=req.body.email
+  student.school=req.body.school
+  student.grade=req.body.grade
+  console.log("asdsadas",student);
+  student.save();
+  return res.status(200).send({msg:"your account has been updated"})
+};
+
+
+
+
+
 const authenticate = async (req, res, next) => {
   if (req.headers['x-access-token']) {
     try {
@@ -361,5 +391,6 @@ module.exports = {
   getExamScore,
   getProfile,
   changePassword,
-  resetPassword
+  resetPassword,
+  updateProfie
 };

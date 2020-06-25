@@ -33,6 +33,31 @@ TeacherController.register = async (req, res) => {
   }
 };
 
+
+
+// *******************************************
+// ***************************************
+// **********************************
+// *******************************
+// *****************************
+// ****************************
+// ***************************
+
+TeacherController.updateProfie = async (req, res) => {
+  const teacher = await TeacherModel.findById(req.body.userId);
+  if (!teacher) return res.status(404).send({msg:"Teacher was not found"});
+  if (req.body.password) {
+    const hasshedPassword = await bcrypt.hashSync(req.body.password, 8);
+    teacher.password=hasshedPassword
+  }
+  teacher.name=req.body.name
+  teacher.email=req.body.email
+  console.log("teacher",teacher);
+  await teacher.save();
+  return res.status(200).send({msg:"your account has been updated"})
+};
+
+
 TeacherController.login = async (req, res) => {
   try {
     if (req.body.loginMethod === 'facebook') {

@@ -21,6 +21,17 @@ const StudentHeader = () => {
       <div id='my-nav' className='collapse navbar-collapse'>
         <ul className='navbar-nav ml-auto'>
           <li>
+                <NavLink
+                activeClassName='active'
+                to='/student/profile'
+                className='nav-link d-flex flex-column justify-content-center align-items-center'
+                exact
+              >
+                <i className='fas fa-user'></i>
+                <span>Profile</span>
+              </NavLink>
+          </li>
+          <li>
             <NavLink
               activeClassName='active'
               to='/student'

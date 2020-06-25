@@ -12,7 +12,8 @@ const {
   getProfile,
   getExamScore,
   changePassword,
-  resetPassword
+  resetPassword,
+  updateProfie
 } = require('../controllers/StudentController');
 
 const router = new Router();
@@ -35,6 +36,8 @@ router.get('/myEnrolledExams', authenticate, myEnrolledExams);
 
 router.put('/changePassword', changePassword);
 router.put('/resetPassword', resetPassword);
+router.put('/updateProfie', authenticate,updateProfie);
+
 
 
 
