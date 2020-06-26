@@ -13,14 +13,15 @@ const {
   getExamScore,
   changePassword,
   resetPassword,
-  updateProfie
+  updateProfie,
+  verify,
 } = require('../controllers/StudentController');
 
 const router = new Router();
 
 router.post('/register', register);
 router.post('/login', login);
-router.get('/me', getProfile);
+router.get('/me', authenticate, getProfile);
 
 router.get('/examData', authenticate, getExamData);
 router.get('/examRules/:id', authenticate, getExamRules);
@@ -31,17 +32,11 @@ router.post('/enroll', authenticate, getExamByCode);
 
 router.patch('/startExam/:id', authenticate, studentStartExam);
 
-
 router.get('/myEnrolledExams', authenticate, myEnrolledExams);
+router.post('/verify', authenticate, verify);
 
 router.put('/changePassword', changePassword);
 router.put('/resetPassword', resetPassword);
-router.put('/updateProfie', authenticate,updateProfie);
-
-
-
-
-
-
+router.put('/updateProfie', authenticate, updateProfie);
 
 module.exports = router;

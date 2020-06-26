@@ -4,6 +4,7 @@ const uniqid = require('uniqid');
 const Exam = require('../models/ExamModel');
 const Student = require('../models/StudentModel');
 const sendMail = require('../email');
+const { response } = require('express');
 
 const sendAnswers = async (req, res) => {
   const studentAnswers = req.body.answers;
@@ -17,17 +18,17 @@ const sendAnswers = async (req, res) => {
     );
 
     if (!studentExam)
-      return res.status(403).send({ msg: 'you are not enrolled to this exam' });
+      return res.status(400).send({ msg: 'you are not enrolled to this exam' });
 
     if (studentExam.score)
-      return res.status(403).send({ msg: 'you did this exam before ' });
+      return res.status(400).send({ msg: 'you did this exam before ' });
 
     const examDuration = exam.duration;
     const isExpired =
       new Date(studentExam.startedAt.getTime() + examDuration * 60 * 1000) -
       new Date();
     if (isExpired <= 0)
-      return res.status(403).send({ msg: 'exam duration expired' });
+      return res.status(400).send({ msg: 'exam duration expired' });
 
     let score = 0;
 
@@ -51,14 +52,11 @@ const sendAnswers = async (req, res) => {
       score: score,
     });
 
-  
-
-
     res.status(200).send();
   } catch (error) {
     console.log(error);
 
-    res.status(403).send(error);
+    res.status(400).send(error);
   }
 };
 
@@ -78,17 +76,21 @@ const getExamByCode = (req, res) => {
 
       if (isEnrolled) return res.status(401).send({ msg: 'already enrolled' });
 
-      Student.findByIdAndUpdate(req.body.userId, {
-        $push: {
-          exams: {
-            examId: exam.id,
-            name: exam.name,
-            score: null,
-            startedAt: null,
-            answers: [],
+      Student.findByIdAndUpdate(
+        req.body.userId,
+        {
+          $push: {
+            exams: {
+              examId: exam.id,
+              name: exam.name,
+              score: null,
+              startedAt: null,
+              answers: [],
+            },
           },
         },
-      })
+        { runValidators: true }
+      )
         .then((result) => {
           res.status(200).json({ examId: exam.id });
         })
@@ -103,7 +105,6 @@ const getExamByCode = (req, res) => {
   });
 };
 
-
 // *******************************************
 // ***************************************
 // **********************************
@@ -114,24 +115,20 @@ const getExamByCode = (req, res) => {
 
 const updateProfie = async (req, res) => {
   const student = await Student.findById(req.body.userId);
-  if (!student) return res.status(404).send({msg:"Student was not found"});
+  if (!student) return res.status(404).send({ msg: 'Student was not found' });
   if (req.body.password) {
     const hasshedPassword = await bcrypt.hashSync(req.body.password, 8);
-    student.password=hasshedPassword
+    student.password = hasshedPassword;
   }
-  student.firstName=req.body.firstName
-  student.lastName=req.body.lastName
-  student.email=req.body.email
-  student.school=req.body.school
-  student.grade=req.body.grade
-  console.log("asdsadas",student);
+  student.firstName = req.body.firstName;
+  student.lastName = req.body.lastName;
+  student.email = req.body.email;
+  student.school = req.body.school;
+  student.grade = req.body.grade;
+  console.log('asdsadas', student);
   student.save();
-  return res.status(200).send({msg:"your account has been updated"})
+  return res.status(200).send({ msg: 'your account has been updated' });
 };
-
-
-
-
 
 const authenticate = async (req, res, next) => {
   if (req.headers['x-access-token']) {
@@ -175,10 +172,10 @@ const studentStartExam = async (req, res) => {
     (exam) => String(exam.examId) === String(req.params.id)
   );
   if (!studentExam)
-    return res.status(403).send({ msg: 'you are not enrolled to this exam' });
+    return res.status(400).send({ msg: 'you are not enrolled to this exam' });
 
   if (studentExam.score)
-    return res.status(403).send({ msg: 'you did this exam before ' });
+    return res.status(400).send({ msg: 'you did this exam before ' });
 
   const exam = await Exam.findById(req.params.id);
 
@@ -268,15 +265,16 @@ const register = async (req, res) => {
     !password ||
     !confirmPassword
   )
-    return res.status(403).send({ msg: 'please fill all fields' });
+    return res.status(400).send({ msg: 'please fill all fields' });
   else if (password !== confirmPassword)
-    return res.status(403).send({ msg: 'password does not match' });
+    return res.status(400).send({ msg: 'password does not match' });
 
   const student = await Student.findOne({ email });
 
-  if (student) return res.status(403).send({ msg: 'email already exist' });
+  if (student) return res.status(400).send({ msg: 'email already exist' });
 
   const hashedPassword = bcrypt.hashSync(req.body.password, 8);
+  const verificationCode = uniqid();
   try {
     const student = await Student.create({
       firstName,
@@ -285,7 +283,13 @@ const register = async (req, res) => {
       grade,
       school,
       password: hashedPassword,
+      verificationCode,
     });
+    sendMail(student.email, 'accountVerification', {
+      name: student.firstName,
+      code: student.verificationCode,
+    });
+
     res.status(200).send(student);
   } catch (err) {
     res.status(500).send(err);
@@ -315,8 +319,36 @@ const login = async (req, res) => {
 };
 
 const getProfile = async (req, res) => {
+  const {
+    email,
+    firstName,
+    lastName,
+    school,
+    grade,
+    isVerified,
+  } = await Student.findById(req.body.userId);
+  res.send({
+    email,
+    firstName,
+    lastName,
+    school,
+    grade,
+    isVerified,
+  });
+};
+
+const verify = async (req, res) => {
+  const verificationCode = req.body.verificationCode;
   const student = await Student.findById(req.body.userId);
-  res.send(student);
+
+  if (verificationCode !== student.verificationCode) {
+    return res.status(400).send({ msg: 'invalid verification code' });
+  }
+
+  student.isVerified = true;
+  await student.save();
+
+  res.send();
 };
 
 const getExamCorrectAnswers = async (req, res) => {
@@ -339,23 +371,22 @@ const myEnrolledExams = async (req, res) => {
   }
 };
 
-
 const changePassword = async (req, res) => {
-  const resetCode= uniqid();
+  const resetCode = uniqid();
   const student = await Student.findOne({
     email: req.body.email,
   });
   if (!student) {
-    return res.status(404).send({msg:"Student was not found"});
+    return res.status(404).send({ msg: 'Student was not found' });
   }
-  student.resetPassCode=resetCode
+  student.resetPassCode = resetCode;
   student.save();
 
-  sendMail(student.email,'resetPassword',{
-    name:student.firstName,
-    code:student.resetPassCode
-  })
-  return res.status(200).send({msg:"Password reset request was recieved"});
+  sendMail(student.email, 'resetPassword', {
+    name: student.firstName,
+    code: student.resetPassCode,
+  });
+  return res.status(200).send({ msg: 'Password reset request was recieved' });
 };
 
 const resetPassword = async (req, res) => {
@@ -363,19 +394,17 @@ const resetPassword = async (req, res) => {
     email: req.body.email,
   });
   if (!student) {
-    return res.status(404).send({msg:"Student was not found"});
+    return res.status(404).send({ msg: 'Student was not found' });
   }
   if (student.resetPassCode == req.body.code) {
     const hashedPassword = bcrypt.hashSync(req.body.password, 8);
-    student.password=hashedPassword
-    student.save()
-    return res.status(200).send({msg:"your password has been reset"});
+    student.password = hashedPassword;
+    student.save();
+    return res.status(200).send({ msg: 'your password has been reset' });
   } else {
-    return res.status(403).send({msg:"Incorrect code"});
+    return res.status(400).send({ msg: 'Incorrect code' });
   }
 };
-
-
 
 module.exports = {
   sendAnswers,
@@ -392,5 +421,6 @@ module.exports = {
   getProfile,
   changePassword,
   resetPassword,
-  updateProfie
+  updateProfie,
+  verify,
 };

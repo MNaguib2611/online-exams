@@ -16,13 +16,13 @@ app.use(express.json());
 app.use('/exams', examRouter);
 app.use('/teacher', teacherRouter);
 
-// // middleware that logs requests method and the url requested.
-// app.use((req, res, next) => {
-//   console.log(`\n\n${new Date().toISOString()}`);
-//   console.log(`new request, its method: ${req.method}`);
-//   console.log(`the url requested: ${req.url}\n`);
-//   next();
-// });
+// middleware that logs requests method and the url requested.
+app.use((req, res, next) => {
+  console.log(`\n\n${new Date().toISOString()}`);
+  console.log(`new request, its method: ${req.method}`);
+  console.log(`the url requested: ${req.url}\n`);
+  next();
+});
 
 // mongoose.connect('mongodb://localhost/test', {useNewUrlParser: true});
 mongoose.connect(

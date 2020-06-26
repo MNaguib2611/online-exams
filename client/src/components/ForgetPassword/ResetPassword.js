@@ -10,7 +10,6 @@ export const ResetPassword = (props) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-
   const handleEmail = (e) => {
     setEmail(e.target.value);
   };
@@ -24,15 +23,13 @@ export const ResetPassword = (props) => {
     setConfirmPassword(e.target.value);
   };
 
-
   const register = () => {
-    if ( password !== confirmPassword)
-    return setError('passwords don\'t match');
+    if (password !== confirmPassword) return setError("passwords don't match");
     axios
       .put(`${props.resetURL}`, {
         email,
         code,
-        password
+        password,
       })
       .then((result) => {
         addToast('Password has been reset successfully', {
@@ -55,7 +52,7 @@ export const ResetPassword = (props) => {
   return (
     <div>
       <h2 className='text-center form-title'>
-        <i className='fas fa-user-graduate'></i> Register
+        <i className='fas fa-user-graduate'></i> Reset password
       </h2>
       <form onSubmit={handleSubmit} id='student-form'>
         <div className='form-group'>
@@ -87,7 +84,7 @@ export const ResetPassword = (props) => {
             value={password}
             onChange={handlePassword}
             required
-            minLength="8"
+            minLength='8'
           />
         </div>
         <div className='form-group'>
@@ -98,7 +95,7 @@ export const ResetPassword = (props) => {
             value={confirmPassword}
             onChange={handleConfirmPassword}
             required
-            minLength="8"
+            minLength='8'
           />
         </div>
 
@@ -113,7 +110,7 @@ export const ResetPassword = (props) => {
         </div>
         {error && <p className='ml-3 text-danger'>{error}</p>}
         <button className='btn btn-block btn-primary btn-blue' type='submit'>
-           Reset Password
+          Reset Password
         </button>
       </form>
     </div>

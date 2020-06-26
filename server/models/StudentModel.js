@@ -34,7 +34,12 @@ const StudentSchema = mongoose.Schema(
       minlength: 3,
       maxlength: 20,
     },
-    resetPassCode:String,
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    verificationCode: String,
+    resetPassCode: String,
     grade: {
       type: Number,
       required: true,

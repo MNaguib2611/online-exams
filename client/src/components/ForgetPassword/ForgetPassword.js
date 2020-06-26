@@ -36,7 +36,7 @@ export const ForgetPassword = (props) => {
   return (
     <div>
       <h2 className='text-center form-title'>
-        <i className='fas fa-user-graduate'></i> Register
+        <i className='fas fa-user-graduate'></i> Forgot your password?
       </h2>
       <form onSubmit={handleSubmit} id='student-form'>
         <div className='form-group'>

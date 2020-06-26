@@ -22,9 +22,14 @@ const TeacherSchema = mongoose.Schema(
       required: false,
       minlength: 8,
     },
-    resetPassCode:String,
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    verificationCode: String,
+    resetPassCode: String,
     facebookID: { type: Number },
-    googleID: {type: Number}
+    googleID: { type: Number },
   },
   { timestamps: true }
 );

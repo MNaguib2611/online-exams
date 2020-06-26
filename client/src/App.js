@@ -8,6 +8,7 @@ import { ExamContext } from './context/examContext';
 import { TeacherContext } from './context/teacherContext';
 import TeacherWrapper from './pages/Teacher/Wrapper';
 import StudentWrapper from './pages/Student/Wrapper';
+import VerifyAccount from './pages/VerifyAccount/VerifyAccount';
 
 function App() {
   const [exam, setExam] = useState({});
@@ -31,6 +32,10 @@ function App() {
                 <TeacherContext.Provider value={{ teacher, setTeacher }}>
                   <TeacherWrapper />
                 </TeacherContext.Provider>
+              </Route>
+
+              <Route path='/verify/:accountType'>
+                <VerifyAccount />
               </Route>
             </Switch>
           </ExamContext.Provider>

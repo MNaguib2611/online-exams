@@ -12,16 +12,21 @@ var bcrypt = require('bcrypt');
 TeacherController.register = async (req, res) => {
   var hasshedPassword = await bcrypt.hashSync(req.body.password, 8);
   try {
-    const Teacher = await TeacherModel.create({
+    const verificationCode = uniqid();
+
+    const teacher = await TeacherModel.create({
       name: req.body.name,
       email: req.body.email,
       password: hasshedPassword,
+      verificationCode,
     });
-    console.log('Teacher created: ');
-    console.log(Teacher);
 
-    res.status(200).send('Registered Successfully');
-    // res.send(Teacher);
+    sendMail(teacher.email, 'accountVerification', {
+      name: teacher.name,
+      code: teacher.verificationCode,
+    });
+
+    res.status(201).send('Registered Successfully');
   } catch (err) {
     console.log('error in register a teacher.');
     console.log(err);
@@ -33,8 +38,6 @@ TeacherController.register = async (req, res) => {
   }
 };
 
-
-
 // *******************************************
 // ***************************************
 // **********************************
@@ -45,18 +48,17 @@ TeacherController.register = async (req, res) => {
 
 TeacherController.updateProfie = async (req, res) => {
   const teacher = await TeacherModel.findById(req.body.userId);
-  if (!teacher) return res.status(404).send({msg:"Teacher was not found"});
+  if (!teacher) return res.status(404).send({ msg: 'Teacher was not found' });
   if (req.body.password) {
     const hasshedPassword = await bcrypt.hashSync(req.body.password, 8);
-    teacher.password=hasshedPassword
+    teacher.password = hasshedPassword;
   }
-  teacher.name=req.body.name
-  teacher.email=req.body.email
-  console.log("teacher",teacher);
+  teacher.name = req.body.name;
+  teacher.email = req.body.email;
+  console.log('teacher', teacher);
   await teacher.save();
-  return res.status(200).send({msg:"your account has been updated"})
+  return res.status(200).send({ msg: 'your account has been updated' });
 };
-
 
 TeacherController.login = async (req, res) => {
   try {
@@ -122,6 +124,17 @@ TeacherController.authenticate = async (req, res, next) => {
   }
 };
 
+TeacherController.getProfile = async (req, res) => {
+  const { email, name, isVerified } = await TeacherModel.findById(
+    req.body.userId
+  );
+  res.send({
+    email,
+    name,
+    isVerified,
+  });
+};
+
 TeacherController.getExamStatus = async (req, res) => {
   let Students = await StudentModel.find({ exam: req.params.id })
     .where('score')
@@ -167,6 +180,20 @@ TeacherController.loginWithFaceBook = async (req, res) => {
   }
 };
 
+TeacherController.verify = async (req, res) => {
+  const verificationCode = req.body.verificationCode;
+  const teacher = await TeacherModel.findById(req.body.userId);
+
+  if (verificationCode !== teacher.verificationCode) {
+    return res.status(400).send({ msg: 'invalid verification code' });
+  }
+
+  teacher.isVerified = true;
+  await teacher.save();
+
+  res.send();
+};
+
 TeacherController.loginWithGoogle = async (req, res) => {
   let Teacher = await TeacherModel.findOne({
     email: req.body.email,
@@ -176,7 +203,6 @@ TeacherController.loginWithGoogle = async (req, res) => {
     await TeacherController.generateToken(Teacher, res);
   } else {
     Teacher = new TeacherModel();
-    console.log('Teacher Register ', Teacher);
     Teacher.name = req.body.name;
     Teacher.email = req.body.email;
     Teacher.googleID = req.body.googleID;
@@ -190,49 +216,41 @@ TeacherController.generateToken = async (teacher, response) => {
     expiresIn: 86400, // expires in 24 hours
   });
   response.status(200).send({ auth: true, token: token });
-}
-
+};
 
 TeacherController.changePassword = async (req, res) => {
-  const resetCode= uniqid();
+  const resetCode = uniqid();
   const teacher = await TeacherModel.findOne({
     email: req.body.email,
   });
   if (!teacher) {
-    return res.status(404).send({msg:"Teacher was not found"});
+    return res.status(404).send({ msg: 'Teacher was not found' });
   }
-  teacher.resetPassCode=resetCode
+  teacher.resetPassCode = resetCode;
   teacher.save();
   teacher.save();
-  sendMail(teacher.email,'resetPassword',{
-    name:teacher.name,
-    code:teacher.resetPassCode
-  })
-  return res.status(200).send({msg:"Password reset request was recieved"});
-}
-
+  sendMail(teacher.email, 'resetPassword', {
+    name: teacher.name,
+    code: teacher.resetPassCode,
+  });
+  return res.status(200).send({ msg: 'Password reset request was recieved' });
+};
 
 TeacherController.resetPassword = async (req, res) => {
   const teacher = await TeacherModel.findOne({
     email: req.body.email,
   });
   if (!teacher) {
-    return res.status(404).send({msg:"Teacher was not found"});
+    return res.status(404).send({ msg: 'Teacher was not found' });
   }
   if (teacher.resetPassCode == req.body.code) {
     const hashedPassword = bcrypt.hashSync(req.body.password, 8);
-    teacher.password=hashedPassword
-    teacher.save()
-    return res.status(200).send({msg:"your password has been reset"});
+    teacher.password = hashedPassword;
+    teacher.save();
+    return res.status(200).send({ msg: 'your password has been reset' });
   } else {
-    return res.status(403).send({msg:"Incorrect code"});
+    return res.status(403).send({ msg: 'Incorrect code' });
   }
-}
-
-
-
-
-
-
+};
 
 module.exports = TeacherController;
