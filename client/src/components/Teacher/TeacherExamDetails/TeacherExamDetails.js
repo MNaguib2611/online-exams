@@ -25,7 +25,8 @@ const TeacherExamDetails = ({ exam }) => {
     setEndDate(new Date(exam.endDate));
     setRules(exam.rules);
     setDuration(exam.duration);
-    setSuccessPercent(exam.successPercent)
+    setSuccessPercent(exam.successPercent);
+    setShowAnswers(exam.showAnswers);
   }, []);
   const handleStartDate = (date) => {
     setStartDate(date);
@@ -51,18 +52,15 @@ const TeacherExamDetails = ({ exam }) => {
   };
 
   const handleShowAnswers = () => {
-   setShowAnswers(!showAnswers);
+    setShowAnswers(!showAnswers);
   };
-
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (successPercent<0 || successPercent>100 )
+    if (successPercent < 0 || successPercent > 100)
       return setError('please enter a valid success percentage');
-      if (duration<0)
-      return setError('please enter a valid exam duration');
-    if (!successPercent || !duration ||!examName || !startDate || !endDate)
+    if (duration < 0) return setError('please enter a valid exam duration');
+    if (!successPercent || !duration || !examName || !startDate || !endDate)
       return setError('please fill all fields');
 
     setError('');
@@ -70,7 +68,15 @@ const TeacherExamDetails = ({ exam }) => {
     axios
       .put(
         '/exams/' + exam._id,
-        { startDate, endDate, rules, name: examName, duration,successPercent ,showAnswers},
+        {
+          startDate,
+          endDate,
+          rules,
+          name: examName,
+          duration,
+          successPercent,
+          showAnswers,
+        },
         {
           headers: {
             'x-access-token': localStorage.getItem('teacherToken'),
@@ -106,7 +112,7 @@ const TeacherExamDetails = ({ exam }) => {
                   placeholder='enter exam name'
                   value={examName}
                   onChange={handleExamName}
-                  title = "exam name"
+                  title='exam name'
                 />
               </div>
 
@@ -116,7 +122,7 @@ const TeacherExamDetails = ({ exam }) => {
                   className='form-control'
                   placeholder='exam rules'
                   onChange={handleExamRules}
-                  title="rules"
+                  title='rules'
                 />
               </div>
 
@@ -127,7 +133,7 @@ const TeacherExamDetails = ({ exam }) => {
                   placeholder='enter duration in minutes'
                   value={duration}
                   onChange={handleExamDuration}
-                  title="duration"
+                  title='duration'
                 />
               </div>
 
@@ -138,31 +144,28 @@ const TeacherExamDetails = ({ exam }) => {
                   placeholder='enter success percentage'
                   value={successPercent}
                   onChange={handleSuccessPercent}
-                  title="success percentage"
+                  title='success percentage'
                 />
               </div>
 
               <div className='form-group'>
                 <label className='mr-2'>Start Date:</label>
-                <DateTimePicker
-                  onChange={handleStartDate}
-                  value={startDate}
-                />
+                <DateTimePicker onChange={handleStartDate} value={startDate} />
               </div>
               <div className='form-group'>
                 <label className='mr-3'>End Date:</label>
-                <DateTimePicker
-                  onChange={handleEndDate}
-                  value={endDate}
-                />
+                <DateTimePicker onChange={handleEndDate} value={endDate} />
               </div>
-              <div className='form-group' title="students can see the correct answers after they finish the exam">
-                    <label className='mr-3'>Show Answers</label>
-                  <input
-                  type="checkbox"
+              <div
+                className='form-group'
+                title='students can see the correct answers after they finish the exam'
+              >
+                <label className='mr-3'>Show Answers</label>
+                <input
+                  type='checkbox'
                   checked={showAnswers}
                   onChange={handleShowAnswers}
-                  ></input>
+                ></input>
               </div>
               {error && <p className='text-danger'>{error}</p>}
               <button className='btn  btn-primary btn-blue' type='submit'>
@@ -172,7 +175,7 @@ const TeacherExamDetails = ({ exam }) => {
           </div>
         </div>
       </div>
-    )) || <Loading/>
+    )) || <Loading />
   );
 };
 
