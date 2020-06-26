@@ -40,10 +40,8 @@ const NewExamForm = () => {
   };
 
   const handleShowAnswers = () => {
-   setShowAnswers(!showAnswers);
+    setShowAnswers(!showAnswers);
   };
-
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -55,7 +53,15 @@ const NewExamForm = () => {
     axios
       .post(
         '/exams',
-        { startDate, endDate, rules, name: examName, duration, successPercent },
+        {
+          startDate,
+          endDate,
+          rules,
+          name: examName,
+          duration,
+          successPercent,
+          showAnswers,
+        },
         {
           headers: {
             'x-access-token': localStorage.getItem('teacherToken'),
@@ -74,7 +80,6 @@ const NewExamForm = () => {
         setError(err.response.data);
       });
   };
-
 
   return (
     <section id='new-exam'>
@@ -137,15 +142,16 @@ const NewExamForm = () => {
                     <label className='mr-3'>End Date:</label>
                     <DateTimePicker onChange={handleEndDate} value={endDate} />
                   </div>
-                  <div className='form-group' title="students can see the correct answers after they finish the exam">
-                    <label className='mr-3'>Show Answers</label>
-                  <input
-                  type="checkbox"
-                  checked={showAnswers}
-                  onChange={handleShowAnswers}
+                  <div
+                    className='form-group'
+                    title='students can see the correct answers after they finish the exam'
                   >
-
-                  </input>
+                    <label className='mr-3'>Show Answers</label>
+                    <input
+                      type='checkbox'
+                      checked={showAnswers}
+                      onChange={handleShowAnswers}
+                    ></input>
                   </div>
                   {error && <p className='text-danger'>{error}</p>}
                   <button className='btn  btn-primary btn-blue' type='submit'>

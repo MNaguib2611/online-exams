@@ -8,6 +8,7 @@ const TeacherController = {};
 
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcrypt');
+const ExamModel = require('../models/ExamModel.js');
 
 TeacherController.register = async (req, res) => {
   var hasshedPassword = await bcrypt.hashSync(req.body.password, 8);
@@ -136,12 +137,20 @@ TeacherController.getProfile = async (req, res) => {
 };
 
 TeacherController.getExamStatus = async (req, res) => {
-  let Students = await StudentModel.find({ exam: req.params.id })
-    .where('score')
-    .ne(null)
-    .sort({ _id: -1 })
-    .limit(15);
-  res.status(200).send(Students);
+  const exam = await ExamModel.findById(req.params.id);
+  const students = await StudentModel.find({
+    'exams.examId': req.params.id,
+  });
+
+  const studentsData = students.map((student) => ({
+    name: student.firstName,
+    email: student.email,
+    score: student.exams.find(
+      (exam) => String(exam.examId) === String(req.params.id)
+    ).score,
+  }));
+
+  res.status(200).send({ exam: exam.name, students: studentsData });
 };
 
 TeacherController.sendInvitation = async (req, res) => {

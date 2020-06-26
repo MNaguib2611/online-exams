@@ -51,9 +51,7 @@ export const ResetPassword = (props) => {
 
   return (
     <div>
-      <h2 className='text-center form-title'>
-        <i className='fas fa-user-graduate'></i> Reset password
-      </h2>
+      <h3 className='text-center form-title mt-3 mb-3'>Reset password</h3>
       <form onSubmit={handleSubmit} id='student-form'>
         <div className='form-group'>
           <input

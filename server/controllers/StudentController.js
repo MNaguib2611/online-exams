@@ -72,8 +72,6 @@ const getExamByCode = (req, res) => {
         (examItem) => String(examItem.examId) === String(exam._id)
       );
 
-      console.log(isEnrolled);
-
       if (isEnrolled) return res.status(401).send({ msg: 'already enrolled' });
 
       Student.findByIdAndUpdate(
@@ -364,7 +362,7 @@ const myEnrolledExams = async (req, res) => {
   try {
     console.log(req.body);
     const student = await Student.findById(req.body.userId);
-    const myExams = student.exams;
+    const myExams = student.exams.filter((exam) => exam.score !== null);
     res.send({ myExams });
   } catch (error) {
     res.status(500).send({ msg: error.message });
