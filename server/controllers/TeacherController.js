@@ -1,3 +1,4 @@
+const uniqid = require('uniqid');
 const TeacherModel = require('../models/TeacherModel.js');
 const StudentModel = require('../models/StudentModel.js');
 const Student = require('../models/StudentModel');
@@ -31,6 +32,31 @@ TeacherController.register = async (req, res) => {
       );
   }
 };
+
+
+
+// *******************************************
+// ***************************************
+// **********************************
+// *******************************
+// *****************************
+// ****************************
+// ***************************
+
+TeacherController.updateProfie = async (req, res) => {
+  const teacher = await TeacherModel.findById(req.body.userId);
+  if (!teacher) return res.status(404).send({msg:"Teacher was not found"});
+  if (req.body.password) {
+    const hasshedPassword = await bcrypt.hashSync(req.body.password, 8);
+    teacher.password=hasshedPassword
+  }
+  teacher.name=req.body.name
+  teacher.email=req.body.email
+  console.log("teacher",teacher);
+  await teacher.save();
+  return res.status(200).send({msg:"your account has been updated"})
+};
+
 
 TeacherController.login = async (req, res) => {
   try {
@@ -164,5 +190,49 @@ TeacherController.generateToken = async (teacher, response) => {
     expiresIn: 86400, // expires in 24 hours
   });
   response.status(200).send({ auth: true, token: token });
-};
+}
+
+
+TeacherController.changePassword = async (req, res) => {
+  const resetCode= uniqid();
+  const teacher = await TeacherModel.findOne({
+    email: req.body.email,
+  });
+  if (!teacher) {
+    return res.status(404).send({msg:"Teacher was not found"});
+  }
+  teacher.resetPassCode=resetCode
+  teacher.save();
+  teacher.save();
+  sendMail(teacher.email,'resetPassword',{
+    name:teacher.name,
+    code:teacher.resetPassCode
+  })
+  return res.status(200).send({msg:"Password reset request was recieved"});
+}
+
+
+TeacherController.resetPassword = async (req, res) => {
+  const teacher = await TeacherModel.findOne({
+    email: req.body.email,
+  });
+  if (!teacher) {
+    return res.status(404).send({msg:"Teacher was not found"});
+  }
+  if (teacher.resetPassCode == req.body.code) {
+    const hashedPassword = bcrypt.hashSync(req.body.password, 8);
+    teacher.password=hashedPassword
+    teacher.save()
+    return res.status(200).send({msg:"your password has been reset"});
+  } else {
+    return res.status(403).send({msg:"Incorrect code"});
+  }
+}
+
+
+
+
+
+
+
 module.exports = TeacherController;

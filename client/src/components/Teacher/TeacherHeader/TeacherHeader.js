@@ -21,6 +21,17 @@ const TeacherHeader = () => {
       <div id='my-nav' className='collapse navbar-collapse'>
         <ul className='navbar-nav ml-auto'>
           <li>
+                <NavLink
+                activeClassName='active'
+                to='/teacher/profile'
+                className='nav-link d-flex flex-column justify-content-center align-items-center'
+                exact
+              >
+                <i className='fas fa-user'></i>
+                <span>Profile</span>
+              </NavLink>
+          </li>
+          <li>
             <NavLink
               activeClassName='active'
               to='/teacher'
@@ -48,7 +59,8 @@ const TeacherHeader = () => {
             <span
               className='nav-link d-flex flex-column justify-content-center align-items-center'
               onClick={() => {
-                localStorage.removeItem('teacherToken');
+                // localStorage.removeItem('teacherToken');
+                localStorage.clear();
                 history.push('/');
               }}
             >

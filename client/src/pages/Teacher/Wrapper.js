@@ -3,6 +3,7 @@ import TeacherHeader from '../../components/Teacher/TeacherHeader/TeacherHeader'
 import { Route, Switch } from 'react-router-dom';
 import TeacherNewExam from './TeacherNewExam/TeacherNewExam';
 import TeacherHome from './TeacherHome/TeacherHome';
+import {TeacherProfile} from './TeacherHome/TeacherProfile';
 import TeacherEditExam from './TeacherEditExam/TeacherEditExam';
 import TeacherExamStatus from './TeacherExamStatus/TeacherExamStatus';
 import requireAuth from '../../hocs/requireAuth';
@@ -15,6 +16,9 @@ const Wrapper = (props) => {
       <Switch>
         <Route exact path='/teacher'>
           <TeacherHome />
+        </Route>
+        <Route exact path='/teacher/profile'>
+          <TeacherProfile />
         </Route>
         <Route exact path='/teacher/exams/new'>
           <TeacherNewExam />

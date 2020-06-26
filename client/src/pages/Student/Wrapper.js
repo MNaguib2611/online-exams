@@ -2,6 +2,9 @@ import React from 'react';
 import requireAuth from '../../hocs/requireAuth';
 import StudentHeader from '../../components/Student/StudentHeader/StudentHeader';
 import StudentHome from './StudentHome/StudentHome';
+import {StudentProfile} from './StudentHome/StudentProfile';
+
+
 import { Switch, Route } from 'react-router-dom';
 import Enroll from './Enroll/Enroll';
 import { ExamRules } from './ExamRules/ExamRules';
@@ -14,6 +17,9 @@ const Wrapper = () => {
       <Switch>
         <Route exact path='/student'>
           <StudentHome />
+        </Route>
+        <Route exact path='/student/profile'>
+          <StudentProfile />
         </Route>
         <Route exact path='/student/enroll'>
           <Enroll />

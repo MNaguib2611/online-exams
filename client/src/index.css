@@ -422,6 +422,10 @@ a:link {
   cursor: not-allowed;
 }
 
+.facebook-login{
+  background-color: #3b5998;
+}
+
 @-webkit-keyframes rotation {
   from {
     -webkit-transform: rotate(0deg);

@@ -32,7 +32,7 @@ export const TeacherRegister = (props) => {
           appearance: 'info',
           autoDismiss: true,
         });
-        props.toggleTeacherForm()
+        props.toggleTeacherForm(0)
       })
       .catch((err) => {
         setError(err.response.data);
@@ -80,7 +80,7 @@ export const TeacherRegister = (props) => {
           <a
             href='#'
             className='toggleForm text-orange'
-            onClick={() => props.toggleTeacherForm()}
+            onClick={() => props.toggleTeacherForm(0)}
           >
             sign in?
           </a>

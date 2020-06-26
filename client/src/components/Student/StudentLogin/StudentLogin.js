@@ -61,18 +61,29 @@ export const StudentLogin = (props) => {
             required
           />
         </div>
-        <div className='mb-3 text-right'>
-          <a
-            href='#'
-            className='toggleForm text-orange'
-            onClick={() => props.toggleStudentForm()}
-          >
-            create account?
-          </a>
+        <div className="row">
+          <div className='col-6 mb-3 text-left'>
+            <a
+              href='#'
+              className='toggleForm text-orange'
+              onClick={() => props.toggleStudentForm(-1)}
+            >
+              forget password?
+            </a>
+          </div>
+          <div className='col-6 mb-3 text-right'>
+            <a
+              href='#'
+              className='toggleForm text-orange'
+              onClick={() => props.toggleStudentForm(1)}
+            >
+              create account?
+            </a>
+          </div>
         </div>
         {error && <p className='ml-3 text-danger'>error{error}</p>}
         <button className='btn btn-block btn-primary btn-blue' type='submit'>
-          Sing in
+          Sign in
         </button>
       </form>
     </div>

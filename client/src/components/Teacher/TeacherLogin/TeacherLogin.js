@@ -71,15 +71,26 @@ export const TeacherLogin = (props) => {
               value={password}
               onChange={handlePassword}
             />
-          </div>
-          <div className='mb-3 text-right'>
-            <a
-              href='#'
-              className='toggleForm text-orange'
-              onClick={() => props.toggleTeacherForm()}
-            >
-              create account?
-            </a>
+          </div> 
+          <div className="row">  
+            <div className='col-6 mb-3 text-left'>
+              <a
+                href='#'
+                className='toggleForm text-orange'
+                onClick={() => props.toggleTeacherForm(-1)}
+              >
+              forget password?
+              </a>
+            </div>
+            <div className='col-6 mb-3 text-right'>
+              <a
+                href='#'
+                className='toggleForm text-orange'
+                onClick={() => props.toggleTeacherForm(1)}
+              >
+                create account?
+              </a>
+            </div>
           </div>
           <p className='text-danger'>{error && error}</p>
           <button
@@ -87,7 +98,7 @@ export const TeacherLogin = (props) => {
             type='button'
             onClick={handleSubmit}
           >
-            SING IN
+            SIGN IN
           </button>
         </form>
         <hr/>

@@ -11,6 +11,9 @@ const {
   myEnrolledExams,
   getProfile,
   getExamScore,
+  changePassword,
+  resetPassword,
+  updateProfie
 } = require('../controllers/StudentController');
 
 const router = new Router();
@@ -30,6 +33,10 @@ router.patch('/startExam/:id', authenticate, studentStartExam);
 
 
 router.get('/myEnrolledExams', authenticate, myEnrolledExams);
+
+router.put('/changePassword', changePassword);
+router.put('/resetPassword', resetPassword);
+router.put('/updateProfie', authenticate,updateProfie);
 
 
 
