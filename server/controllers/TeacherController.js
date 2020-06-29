@@ -244,7 +244,7 @@ TeacherController.changePassword = async (req, res) => {
     name: teacher.name,
     code: teacher.resetPassCode,
   });
-  return res.status(200).send({ msg: 'Password reset request was recieved' });
+  return res.status(200).send({ msg: 'Password reset request was received' });
 };
 
 TeacherController.resetPassword = async (req, res) => {
