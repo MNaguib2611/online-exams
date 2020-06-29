@@ -422,7 +422,7 @@ a:link {
   cursor: not-allowed;
 }
 
-.facebook-login{
+.facebook-login {
   background-color: #3b5998;
 }
 
@@ -442,4 +442,31 @@ a:link {
   to {
     transform: rotate(359deg);
   }
+}
+
+.notes-title {
+  color: #1f325c;
+}
+
+#notes {
+  width: 400px;
+  display: block;
+  font-size: 22px;
+  color: #1f325c;
+  overflow: hidden;
+  line-height: 44px;
+  background-image: linear-gradient(
+    to bottom,
+    transparent,
+    transparent 42px,
+    #464646 0
+  );
+  background-size: 100% 44px;
+  background-repeat: repeat-y;
+  background-color: transparent;
+  border: none;
+  resize: none;
+}
+#notes:focus {
+  outline: none;
 }

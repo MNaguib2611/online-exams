@@ -48,7 +48,9 @@ export const Score = () => {
                       </div>
                       <div className='d-flex'>
                         <strong className='mr-4'>Percentage:</strong>
-                        <p className='mr-4'>{exam.examData.percentage} %</p>
+                        <p className='mr-4'>
+                          {exam.examData.percentage.toFixed(1)} %
+                        </p>
                       </div>
                     </div>
 
