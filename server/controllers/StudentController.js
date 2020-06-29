@@ -65,7 +65,9 @@ const getExamByCode = (req, res) => {
     if (!exam) {
       return res.status(404).json({ msg: 'No exam with that code was found' });
     }
-
+    if( exam.questions.length === 0 ){
+      return res.status(404).json({ msg: 'Exam has no questions yet.' });
+    }
     if (exam.startDate <= Date.now() && exam.endDate > Date.now()) {
       const student = await Student.findById(req.body.userId);
       const isEnrolled = student.exams.find(
