@@ -184,6 +184,7 @@ TeacherController.loginWithFaceBook = async (req, res) => {
     Teacher.name = req.body.name;
     Teacher.email = req.body.email;
     Teacher.facebookID = req.body.facebookID;
+    Teacher.isVerified = true;
     Teacher.save();
     await TeacherController.generateToken(Teacher, res);
   }
@@ -215,6 +216,7 @@ TeacherController.loginWithGoogle = async (req, res) => {
     Teacher.name = req.body.name;
     Teacher.email = req.body.email;
     Teacher.googleID = req.body.googleID;
+    Teacher.isVerified = true;
     Teacher.save();
     await TeacherController.generateToken(Teacher, res);
   }
