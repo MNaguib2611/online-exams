@@ -14,6 +14,7 @@ export const Score = () => {
         },
       })
       .then((result) => {
+        console.log(result);
         setExam(result.data);
       })
       .catch((err) => {

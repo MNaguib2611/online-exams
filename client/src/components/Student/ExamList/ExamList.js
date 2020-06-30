@@ -46,7 +46,7 @@ const ExamList = () => {
                 {examList.map((exam) => (
                   <tr key={exam._id}>
                     <td>{exam.name}</td>
-                    <td>{exam.startedAt}</td>
+                    <td>{new Date(exam.startedAt).toLocaleString()}</td>
                     <td>{exam.percentage.toFixed(1)}%</td>
                     <td>{exam.passed ? 'True' : 'False'}</td>
                     <td>

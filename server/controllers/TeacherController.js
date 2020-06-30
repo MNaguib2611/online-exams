@@ -56,7 +56,6 @@ TeacherController.updateProfie = async (req, res) => {
   }
   teacher.name = req.body.name;
   teacher.email = req.body.email;
-  console.log('teacher', teacher);
   await teacher.save();
   return res.status(200).send({ msg: 'your account has been updated' });
 };
@@ -70,12 +69,10 @@ TeacherController.login = async (req, res) => {
     } else {
       const Teacher = await TeacherModel.findOne({ email: req.body.email });
       if (Teacher.facebookID) {
-        console.log('Teacher Did not create a password, logged with facebook');
         res
           .status(409)
           .send('You seem to have logged with your facebook acount.');
       } else if (Teacher.googleID) {
-        console.log('Teacher Did not create a password, logged with facebook');
         res
           .status(409)
           .send('You seem to have logged with your facebook acount.');
@@ -161,7 +158,6 @@ TeacherController.sendInvitation = async (req, res) => {
 
   const students = await Student.find({ school, grade });
   students.forEach((student) => {
-    console.log(student);
     sendMail(student.email, 'examInvitation', {
       studentName: student.firstName,
       examName,
@@ -180,7 +176,6 @@ TeacherController.loginWithFaceBook = async (req, res) => {
     await TeacherController.generateToken(Teacher, res);
   } else {
     Teacher = new TeacherModel();
-    console.log('Teacher Register ', Teacher);
     Teacher.name = req.body.name;
     Teacher.email = req.body.email;
     Teacher.facebookID = req.body.facebookID;

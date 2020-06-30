@@ -125,7 +125,6 @@ const updateProfie = async (req, res) => {
   student.email = req.body.email;
   student.school = req.body.school;
   student.grade = req.body.grade;
-  console.log('asdsadas', student);
   student.save();
   return res.status(200).send({ msg: 'your account has been updated' });
 };
@@ -313,7 +312,6 @@ const login = async (req, res) => {
       res.status(404).send("Couldn't find the student.");
     }
   } catch (err) {
-    console.log(err);
     res.status(404).send("Couldn't find the student.");
   }
 };
@@ -362,7 +360,6 @@ const getExamCorrectAnswers = async (req, res) => {
 
 const myEnrolledExams = async (req, res) => {
   try {
-    console.log(req.body);
     const student = await Student.findById(req.body.userId);
     const myExams = student.exams.filter((exam) => exam.score !== null);
     res.send({ myExams });

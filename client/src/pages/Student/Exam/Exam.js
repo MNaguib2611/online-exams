@@ -179,24 +179,23 @@ export const Exam = (props) => {
                           new Date(studentExam.startedAt).setSeconds(
                             new Date(studentExam.startedAt).getSeconds() +
                               exam.duration * 60 -
-                              3
+                              4
                           )
                         ).toString()}
                         callback={() => {
                           if (canSubmit) {
-                            const answersToSubmit = [];
+                            const timeoutAnswers = [];
                             Object.keys(answers).forEach((key) => {
-                              if (!answers[key])
-                                answersToSubmit.push({
-                                  _id: key,
-                                  answer: answers[key],
-                                });
+                              timeoutAnswers.push({
+                                _id: key,
+                                answer: answers[key],
+                              });
                             });
 
                             axios
                               .post(
                                 '/students/exams/' + id + '/answers/',
-                                { answers: answersToSubmit },
+                                { answers: timeoutAnswers },
                                 {
                                   headers: {
                                     'x-access-token': localStorage.getItem(
