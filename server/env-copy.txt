@@ -1,0 +1,5 @@
+SERVER_PORT=4000
+DATA_BASE_PORT=27017
+DEVELOPMENT_SERVER=localhost
+APP_MAIL=online.exams.platform.iti@gmail.com
+APP_MAIL_pass=ITIintake40

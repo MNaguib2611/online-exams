@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Exams - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/app.css">
+</head>
+
+<body>
+
+    <section id="login">
+        <div class="overly">
+            <div class="container">
+
+                <div class="form-container">
+
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <a class="nav-item nav-link active" id="nav-student-tab" data-toggle="tab"
+                                href="#nav-student" role="tab" aria-controls="nav-student"
+                                aria-selected="true">Student</a>
+                            <a class="nav-item nav-link" id="nav-teacher-tab" data-toggle="tab" href="#nav-teacher"
+                                role="tab" aria-controls="nav-teacher" aria-selected="false">Teacher</a>
+
+                        </div>
+                    </nav>
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-student" role="tabpanel"
+                            aria-labelledby="nav-student-tab">
+                            <h2 class="text-center form-title"> <i class="fas fa-user-graduate"></i> Student </i>
+                            </h2>
+
+                            <div class=" form-group">
+                                <input type="text" class="form-control" placeholder="Enter exam key">
+                            </div>
+
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Enter your name">
+                            </div>
+
+                            <div class="form-group">
+                                <input type="email" class="form-control" placeholder="Enter your email">
+                            </div>
+                            <button class="btn btn-block btn-primary btn-blue"> Fetch The Exam</button>
+                        </div>
+                        <div class="tab-pane fade" id="nav-teacher" role="tabpanel" aria-labelledby="nav-teacher-tab">
+
+                            <div id="teacher-form">
+                                <div class="teacher-login">
+                                    <h2 class="text-center form-title"> <i class="fas fa-user-tie"></i> Sign in </i>
+                                    </h2>
+
+                                    <div class="form-group">
+                                        <input type="email" class="form-control" placeholder="Email">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <input type="password" class="form-control" placeholder="password">
+                                    </div>
+                                    <div class="mb-3 text-right">
+                                        <a href="#" class="toggleForm" class="text-orange">create account?</a>
+                                    </div>
+                                    <button class="btn btn-block btn-blue"> SING IN</button>
+                                </div>
+
+                                <div class="teacher-register hidden">
+                                    <h2 class="text-center form-title"> <i class="fas fa-user-tie"></i> Register</i>
+                                    </h2>
+
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" placeholder="Name">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <input type="email" class="form-control" placeholder="Email">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <input type="password" class="form-control" placeholder="password">
+                                    </div>
+                                    <div class="mb-3 text-right">
+                                        <a href="#" class="toggleForm" class="text-orange">sign in?</a>
+                                    </div>
+                                    <button class="btn btn-block btn-blue"> REGISTER</button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/js/all.min.js"></script>
+
+    <script src="assets/js/app.js"></script>
+</body>
+
+</html>

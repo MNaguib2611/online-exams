@@ -1,0 +1,81 @@
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+}
+
+#login {
+  background-image: url('../imgs/login_bg.jpg');
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+#login .overly {
+  position: absolute;
+  top: 0;
+  background-color: #00000059;
+  width: 100%;
+  height: 100%;
+}
+.form-container {
+  background-color: #fff;
+  max-width: 50%;
+  margin: 8rem auto;
+}
+
+.nav-tabs .nav-link {
+  padding: 0.7rem;
+  width: 50%;
+  text-align: center;
+  width: 50%;
+  text-align: center;
+  background-color: #1f325c;
+  color: #fff;
+  border-radius: 0;
+  font-size: 1.2rem;
+}
+
+.tab-content {
+  padding: 0.4rem;
+}
+.nav-tabs .nav-link:hover {
+  border: none;
+}
+
+.btn-blue {
+  background-color: #1f325c;
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+.text-orange {
+  color: #ec9926;
+}
+
+.btn-orange {
+  background-color: #ec9926;
+  color: #fff;
+  font-size: 1.2rem;
+}
+
+.btn-blue:hover {
+  background-color: #fdb24a;
+  border-color: #fdb24a;
+  color: #fff;
+}
+.btn-orange:hover {
+  background-color: #fdb24a;
+  color: #fff;
+}
+
+.form-title {
+  color: #1f325c;
+  margin: 0.6rem auto;
+}
+
+.hidden {
+  display: none;
+}
